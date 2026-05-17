@@ -79,6 +79,7 @@ class _RawMessage(MIDIMessage):
 class _State:
     current_page    = 0
     current_pc      = -1
+    active_page     = -1   # página onde o preset ativo foi selecionado
     fx_states       = {}
     preset_switches = []
     fx_switches     = {}
@@ -137,10 +138,12 @@ def _refresh_preset_leds():
         pc = page * 8 + sw_idx
         is_active = (pc == _st.current_pc)
         has_fx = any(sw is switch for sw in _st.fx_switches.values())
+        color = (0, 190, 190) if is_active else (255, 255, 255)
+        bri   = 1.0 if is_active else 0.05
         if has_fx:
-            _set_first_pixels(switch, (255, 255, 255), 1.0 if is_active else 0.05)
+            _set_first_pixels(switch, color, bri)
         else:
-            _set_pixels(switch, (255, 255, 255), 1.0 if is_active else 0.05)
+            _set_pixels(switch, color, bri)
 
 
 def _refresh_fx_leds():
@@ -160,7 +163,7 @@ def _refresh_fx_leds():
 def _refresh_pager_display():
     """Atualiza o label do pager."""
     page_name = PAGES[_st.current_page]
-    if _st.current_pc >= 0:
+    if _st.current_pc >= 0 and _st.current_page == _st.active_page:
         sw_idx  = _st.current_pc % 8
         sw_name = SWITCH_NAMES[sw_idx]
         _DISPLAY_PAGER.text = f"{page_name}{sw_name} - {_st.current_pc + 1}"
@@ -204,6 +207,7 @@ class _PresetCallback(_BaseCallback):
     def push(self):
         pc = _st.current_page * 8 + self._sw_idx
         _st.current_pc = pc
+        _st.active_page = _st.current_page
         _st.midi.send(_RawMessage([0xC0 | self._channel, pc]))
 
         preset = PRESETS.get(pc, {})
@@ -222,10 +226,12 @@ class _PresetCallback(_BaseCallback):
         if switch:
             is_active = (pc == _st.current_pc)
             has_fx = any(sw is switch for sw in _st.fx_switches.values())
+            color = (0, 190, 190) if is_active else (255, 255, 255)
+            bri   = 1.0 if is_active else 0.05
             if has_fx:
-                _set_first_pixels(switch, (255, 255, 255), 1.0 if is_active else 0.05)
+                _set_first_pixels(switch, color, bri)
             else:
-                _set_pixels(switch, (255, 255, 255), 1.0 if is_active else 0.05)
+                _set_pixels(switch, color, bri)
 
 
 class _PageCallback(_BaseCallback):
@@ -236,7 +242,6 @@ class _PageCallback(_BaseCallback):
 
     def push(self):
         _st.current_page = (_st.current_page + 1) % len(PAGES)
-        _st.current_pc = -1
         _refresh_preset_leds()
         _refresh_pager_display()
 
@@ -246,7 +251,6 @@ class _PageDirectCallback(_BaseCallback):
 
     def push(self):
         _st.current_page = 0
-        _st.current_pc = -1
         _refresh_preset_leds()
         _refresh_pager_display()
 
