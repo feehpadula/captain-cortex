@@ -65,6 +65,7 @@ PRESETS = {
 from pyswitch.controller.actions import Action
 from adafruit_midi.midi_message import MIDIMessage
 from display import DISPLAY_PRESET_NAME as _DISPLAY_PRESET_NAME
+from display import DISPLAY_PAGER as _DISPLAY_PAGER
 
 
 class _RawMessage(MIDIMessage):
@@ -80,6 +81,7 @@ class _SharedState:
     appl             = None
     preset_callbacks = []
     fx_callbacks     = {}
+    pager            = None
 
 _state = _SharedState()
 
@@ -130,6 +132,10 @@ class _PresetCallback(_BaseCallback):
         preset = PRESETS.get(self._pc, {})
         # Atualiza nome no display central
         _DISPLAY_PRESET_NAME.text = preset.get("name", "")
+        # Atualiza label do pager: "PageSwitch (Preset #)"
+        if _state.pager:
+            page_text = _state.pager.pages[_state.pager.current_page_index]["text"]
+            _DISPLAY_PAGER.text = f"{page_text}{self._text} - {self._pc + 1}"
         # Atualiza estados dos efeitos
         for cc, active in preset.get("fx", {}).items():
             _state.fx_states[cc] = active

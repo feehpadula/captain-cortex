@@ -1,7 +1,7 @@
 from pyswitch.clients.local.actions.pager import PagerAction
 from pyswitch.hardware.devices.pa_midicaptain_10 import *
 
-from preset_manager import PRESET_SELECT, EFFECT_TOGGLE
+from preset_manager import PRESET_SELECT, EFFECT_TOGGLE, _state
 
 from display import DISPLAY_HEADER_1
 from display import DISPLAY_HEADER_2
@@ -9,7 +9,7 @@ from display import DISPLAY_HEADER_3
 from display import DISPLAY_HEADER_4
 from display import DISPLAY_HEADER_5
 from display import DISPLAY_HEADER_6
-from display import DISPLAY_LABEL_1
+from display import DISPLAY_PAGER
 
 # ── MIDI channel (0 = canal 1) ─────────────────────────────────────────────────
 _CH = 0
@@ -26,11 +26,13 @@ _pager = PagerAction(
         { "id": 3, "color": (255, 255, 255), "text": "C" },
         { "id": 4, "color": (255, 255, 255), "text": "D" },
     ],
-    display            = DISPLAY_LABEL_1,
+    display            = DISPLAY_PAGER,
     led_brightness     = 1,
     led_brightness_off = 0.1,
     led_brightness_on  = 1,
 )
+
+_state.pager = _pager
 
 Inputs = [
     { "assignment": PA_MIDICAPTAIN_10_EXP_PEDAL_1    },
@@ -42,10 +44,10 @@ Inputs = [
     {
         "assignment": PA_MIDICAPTAIN_10_SWITCH_1,
         "actions": [
-            PRESET_SELECT(pc=0,  channel=_CH, text="", id=1, enable_callback=_pager.enable_callback),
-            PRESET_SELECT(pc=8,  channel=_CH, text="", id=2, enable_callback=_pager.enable_callback),
-            PRESET_SELECT(pc=16, channel=_CH, text="", id=3, enable_callback=_pager.enable_callback),
-            PRESET_SELECT(pc=24, channel=_CH, text="", id=4, enable_callback=_pager.enable_callback),
+            PRESET_SELECT(pc=0,  channel=_CH, text="1", id=1, enable_callback=_pager.enable_callback),
+            PRESET_SELECT(pc=8,  channel=_CH, text="1", id=2, enable_callback=_pager.enable_callback),
+            PRESET_SELECT(pc=16, channel=_CH, text="1", id=3, enable_callback=_pager.enable_callback),
+            PRESET_SELECT(pc=24, channel=_CH, text="1", id=4, enable_callback=_pager.enable_callback),
         ],
         "actionsHold": [
             EFFECT_TOGGLE(cc=34, channel=_CH, color_on=_FX, color_off=_OFF, display=DISPLAY_HEADER_1, text="GATE"),
@@ -56,10 +58,10 @@ Inputs = [
     {
         "assignment": PA_MIDICAPTAIN_10_SWITCH_2,
         "actions": [
-            PRESET_SELECT(pc=1,  channel=_CH, text="", id=1, enable_callback=_pager.enable_callback),
-            PRESET_SELECT(pc=9,  channel=_CH, text="", id=2, enable_callback=_pager.enable_callback),
-            PRESET_SELECT(pc=17, channel=_CH, text="", id=3, enable_callback=_pager.enable_callback),
-            PRESET_SELECT(pc=25, channel=_CH, text="", id=4, enable_callback=_pager.enable_callback),
+            PRESET_SELECT(pc=1,  channel=_CH, text="2", id=1, enable_callback=_pager.enable_callback),
+            PRESET_SELECT(pc=9,  channel=_CH, text="2", id=2, enable_callback=_pager.enable_callback),
+            PRESET_SELECT(pc=17, channel=_CH, text="2", id=3, enable_callback=_pager.enable_callback),
+            PRESET_SELECT(pc=25, channel=_CH, text="2", id=4, enable_callback=_pager.enable_callback),
         ],
     },
 
@@ -67,10 +69,10 @@ Inputs = [
     {
         "assignment": PA_MIDICAPTAIN_10_SWITCH_3,
         "actions": [
-            PRESET_SELECT(pc=2,  channel=_CH, text="", id=1, enable_callback=_pager.enable_callback),
-            PRESET_SELECT(pc=10, channel=_CH, text="", id=2, enable_callback=_pager.enable_callback),
-            PRESET_SELECT(pc=18, channel=_CH, text="", id=3, enable_callback=_pager.enable_callback),
-            PRESET_SELECT(pc=26, channel=_CH, text="", id=4, enable_callback=_pager.enable_callback),
+            PRESET_SELECT(pc=2,  channel=_CH, text="3", id=1, enable_callback=_pager.enable_callback),
+            PRESET_SELECT(pc=10, channel=_CH, text="3", id=2, enable_callback=_pager.enable_callback),
+            PRESET_SELECT(pc=18, channel=_CH, text="3", id=3, enable_callback=_pager.enable_callback),
+            PRESET_SELECT(pc=26, channel=_CH, text="3", id=4, enable_callback=_pager.enable_callback),
         ],
     },
 
@@ -78,10 +80,10 @@ Inputs = [
     {
         "assignment": PA_MIDICAPTAIN_10_SWITCH_4,
         "actions": [
-            PRESET_SELECT(pc=3,  channel=_CH, text="", id=1, enable_callback=_pager.enable_callback),
-            PRESET_SELECT(pc=11, channel=_CH, text="", id=2, enable_callback=_pager.enable_callback),
-            PRESET_SELECT(pc=19, channel=_CH, text="", id=3, enable_callback=_pager.enable_callback),
-            PRESET_SELECT(pc=27, channel=_CH, text="", id=4, enable_callback=_pager.enable_callback),
+            PRESET_SELECT(pc=3,  channel=_CH, text="4", id=1, enable_callback=_pager.enable_callback),
+            PRESET_SELECT(pc=11, channel=_CH, text="4", id=2, enable_callback=_pager.enable_callback),
+            PRESET_SELECT(pc=19, channel=_CH, text="4", id=3, enable_callback=_pager.enable_callback),
+            PRESET_SELECT(pc=27, channel=_CH, text="4", id=4, enable_callback=_pager.enable_callback),
         ],
         "actionsHold": [],
     },
@@ -98,10 +100,10 @@ Inputs = [
     {
         "assignment": PA_MIDICAPTAIN_10_SWITCH_A,
         "actions": [
-            PRESET_SELECT(pc=4,  channel=_CH, text="", id=1, enable_callback=_pager.enable_callback),
-            PRESET_SELECT(pc=12, channel=_CH, text="", id=2, enable_callback=_pager.enable_callback),
-            PRESET_SELECT(pc=20, channel=_CH, text="", id=3, enable_callback=_pager.enable_callback),
-            PRESET_SELECT(pc=28, channel=_CH, text="", id=4, enable_callback=_pager.enable_callback),
+            PRESET_SELECT(pc=4,  channel=_CH, text="A", id=1, enable_callback=_pager.enable_callback),
+            PRESET_SELECT(pc=12, channel=_CH, text="A", id=2, enable_callback=_pager.enable_callback),
+            PRESET_SELECT(pc=20, channel=_CH, text="A", id=3, enable_callback=_pager.enable_callback),
+            PRESET_SELECT(pc=28, channel=_CH, text="A", id=4, enable_callback=_pager.enable_callback),
         ],
         "actionsHold": [
             EFFECT_TOGGLE(cc=37, channel=_CH, color_on=_FX, color_off=_OFF, display=DISPLAY_HEADER_2, text="FX 1"),
@@ -112,10 +114,10 @@ Inputs = [
     {
         "assignment": PA_MIDICAPTAIN_10_SWITCH_B,
         "actions": [
-            PRESET_SELECT(pc=5,  channel=_CH, text="", id=1, enable_callback=_pager.enable_callback),
-            PRESET_SELECT(pc=13, channel=_CH, text="", id=2, enable_callback=_pager.enable_callback),
-            PRESET_SELECT(pc=21, channel=_CH, text="", id=3, enable_callback=_pager.enable_callback),
-            PRESET_SELECT(pc=29, channel=_CH, text="", id=4, enable_callback=_pager.enable_callback),
+            PRESET_SELECT(pc=5,  channel=_CH, text="B", id=1, enable_callback=_pager.enable_callback),
+            PRESET_SELECT(pc=13, channel=_CH, text="B", id=2, enable_callback=_pager.enable_callback),
+            PRESET_SELECT(pc=21, channel=_CH, text="B", id=3, enable_callback=_pager.enable_callback),
+            PRESET_SELECT(pc=29, channel=_CH, text="B", id=4, enable_callback=_pager.enable_callback),
         ],
         "actionsHold": [
             EFFECT_TOGGLE(cc=38, channel=_CH, color_on=_FX, color_off=_OFF, display=DISPLAY_HEADER_3, text="FX 2"),
@@ -126,10 +128,10 @@ Inputs = [
     {
         "assignment": PA_MIDICAPTAIN_10_SWITCH_C,
         "actions": [
-            PRESET_SELECT(pc=6,  channel=_CH, text="", id=1, enable_callback=_pager.enable_callback),
-            PRESET_SELECT(pc=14, channel=_CH, text="", id=2, enable_callback=_pager.enable_callback),
-            PRESET_SELECT(pc=22, channel=_CH, text="", id=3, enable_callback=_pager.enable_callback),
-            PRESET_SELECT(pc=30, channel=_CH, text="", id=4, enable_callback=_pager.enable_callback),
+            PRESET_SELECT(pc=6,  channel=_CH, text="C", id=1, enable_callback=_pager.enable_callback),
+            PRESET_SELECT(pc=14, channel=_CH, text="C", id=2, enable_callback=_pager.enable_callback),
+            PRESET_SELECT(pc=22, channel=_CH, text="C", id=3, enable_callback=_pager.enable_callback),
+            PRESET_SELECT(pc=30, channel=_CH, text="C", id=4, enable_callback=_pager.enable_callback),
         ],
         "actionsHold": [
             EFFECT_TOGGLE(cc=39, channel=_CH, color_on=_FX, color_off=_OFF, display=DISPLAY_HEADER_4, text="FX 3"),
@@ -140,10 +142,10 @@ Inputs = [
     {
         "assignment": PA_MIDICAPTAIN_10_SWITCH_D,
         "actions": [
-            PRESET_SELECT(pc=7,  channel=_CH, text="", id=1, enable_callback=_pager.enable_callback),
-            PRESET_SELECT(pc=15, channel=_CH, text="", id=2, enable_callback=_pager.enable_callback),
-            PRESET_SELECT(pc=23, channel=_CH, text="", id=3, enable_callback=_pager.enable_callback),
-            PRESET_SELECT(pc=31, channel=_CH, text="", id=4, enable_callback=_pager.enable_callback),
+            PRESET_SELECT(pc=7,  channel=_CH, text="D", id=1, enable_callback=_pager.enable_callback),
+            PRESET_SELECT(pc=15, channel=_CH, text="D", id=2, enable_callback=_pager.enable_callback),
+            PRESET_SELECT(pc=23, channel=_CH, text="D", id=3, enable_callback=_pager.enable_callback),
+            PRESET_SELECT(pc=31, channel=_CH, text="D", id=4, enable_callback=_pager.enable_callback),
         ],
         "actionsHold": [
             EFFECT_TOGGLE(cc=40, channel=_CH, color_on=_FX, color_off=_OFF, display=DISPLAY_HEADER_5, text="FX 4"),

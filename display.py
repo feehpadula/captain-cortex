@@ -43,7 +43,7 @@ DISPLAY_HEADER_1 = DisplayLabel(
         x = 0, 
         y = 0, 
         w = 80, 
-        h = 20
+        h = 30
     )
 )
 
@@ -58,7 +58,7 @@ DISPLAY_HEADER_2 = DisplayLabel(
         x = 80, 
         y = 0, 
         w = 80, 
-        h = 20
+        h = 30
     )
 )
 
@@ -73,7 +73,7 @@ DISPLAY_HEADER_3 = DisplayLabel(
         x = 160, 
         y = 0, 
         w = 80, 
-        h = 20
+        h = 30
     )
 )
 
@@ -86,18 +86,18 @@ DISPLAY_HEADER_4 = DisplayLabel(
     }, 
     bounds = DisplayBounds(
         x = 0, 
-        y = 20, 
+        y = 30, 
         w = 80, 
-        h = 20
+        h = 30
     )
 )
 
 DISPLAY_HEADER_5 = DisplayLabel(
     bounds = DisplayBounds(
         x = 80, 
-        y = 20, 
+        y = 30, 
         w = 80, 
-        h = 20
+        h = 30
     ), 
     layout = {
         "font": "/fonts/A15.pcf",
@@ -110,9 +110,9 @@ DISPLAY_HEADER_5 = DisplayLabel(
 DISPLAY_HEADER_6 = DisplayLabel(
     bounds = DisplayBounds(
         x = 160, 
-        y = 20, 
+        y = 30, 
         w = 80, 
-        h = 20
+        h = 30
     ), 
     layout = {
         "font": "/fonts/A15.pcf",
@@ -125,7 +125,7 @@ DISPLAY_HEADER_6 = DisplayLabel(
 DISPLAY_PRESET_NAME = DisplayLabel(
     bounds = DisplayBounds(
         x = 0, 
-        y = 40, 
+        y = 60, 
         w = 240, 
         h = 120
     ), 
@@ -136,12 +136,12 @@ DISPLAY_PRESET_NAME = DisplayLabel(
     }
 )
 
-DISPLAY_LABEL_1 = DisplayLabel(
+DISPLAY_PAGER = DisplayLabel(
     bounds = DisplayBounds(
         x = 0, 
-        y = 160, 
+        y = 180, 
         w = 240, 
-        h = 80
+        h = 60
     ), 
     layout = {
         "font": "/fonts/PTSans-NarrowBold-40.pcf",
@@ -149,7 +149,6 @@ DISPLAY_LABEL_1 = DisplayLabel(
         "stroke": 1,
         "textColor": Colors.BLACK,
         "maxTextWidth": 240,
-        
     }
 )
 
@@ -178,7 +177,7 @@ Splashes = _StaticSplash(
             DISPLAY_HEADER_5,
             DISPLAY_HEADER_6,
             DISPLAY_PRESET_NAME,
-            DISPLAY_LABEL_1,
+            DISPLAY_PAGER,
         ]
     )
 )
