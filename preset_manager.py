@@ -20,10 +20,6 @@
 #     40 = FX Slot 4
 #     41 = FX Slot 5
 #
-# EXEMPLO:
-#   0: { "name": "Clean",  "fx": { 34: False, 37: False, 38: True,  39: False, 40: True,  41: True  } },
-#   1: { "name": "Crunch", "fx": { 34: True,  37: True,  38: False, 39: False, 40: True,  41: False } },
-#
 ##############################################################################################################################################
 
 PRESETS = {
@@ -63,10 +59,9 @@ PRESETS = {
 }
 
 ##############################################################################################################################################
-# Implementação interna — não é necessário editar abaixo desta linha.
+# Implementação interna
 ##############################################################################################################################################
 
-from pyswitch.controller.callbacks import Callback
 from pyswitch.controller.actions import Action
 from adafruit_midi.midi_message import MIDIMessage
 
@@ -78,20 +73,39 @@ class _RawMessage(MIDIMessage):
         return self.__data
 
 
-# Estado global compartilhado entre todos os callbacks
 class _SharedState:
-    current_pc       = -1   # PC do preset ativo (-1 = nenhum)
-    fx_states        = {}   # { cc: bool } estado atual de cada efeito
-    fx_callbacks     = {}   # { cc: _FxCallback } para notificação de mudança de preset
-    preset_callbacks = []   # todos os _PresetCallback registrados (para apagar LEDs)
-    midi             = None
+    current_pc       = -1
+    fx_states        = {}
+    appl             = None
+    preset_callbacks = []
+    fx_callbacks     = {}
 
 _state = _SharedState()
 
 
-# ── Callback de seleção de preset ─────────────────────────────────────────────
+class _BaseCallback:
+    def __init__(self):
+        self.action = None
 
-class _PresetCallback(Callback):
+    def init(self, appl, listener=None):
+        self._appl = appl
+
+    def reset(self):
+        pass
+
+    def push(self):
+        pass
+
+    def release(self):
+        pass
+
+    def update_displays(self):
+        pass
+
+
+# ── Preset callback ────────────────────────────────────────────────────────────
+
+class _PresetCallback(_BaseCallback):
     def __init__(self, pc, channel, color, text):
         super().__init__()
         self._pc      = pc
@@ -102,40 +116,48 @@ class _PresetCallback(Callback):
 
     def init(self, appl, listener=None):
         self._appl = appl
-        _state.midi = appl.client.midi
+        _state.appl = appl
+
+    def _set_led(self):
+        """Usado apenas para actions FORA da página atual (disabled pelo pager).
+        Afeta todos os pixels do switch pois o framework não gerencia esses."""
+        is_active = (_state.current_pc == self._pc)
+        self.action.switch.color      = self._color
+        self.action.switch.brightness = 1.0 if is_active else 0.05
 
     def push(self):
-        # 1. Enviar Program Change
-        _state.midi.send(_RawMessage([0xC0 | self._channel, self._pc]))
-
-        # 2. Atualizar estado global
+        self._appl.client.midi.send(_RawMessage([0xC0 | self._channel, self._pc]))
         _state.current_pc = self._pc
-
-        # 3. Carregar fx states do preset e notificar botões de efeito
         preset = PRESETS.get(self._pc, {})
-        fx = preset.get("fx", {})
-        for cc, active in fx.items():
+        for cc, active in preset.get("fx", {}).items():
             _state.fx_states[cc] = active
-            cb = _state.fx_callbacks.get(cc)
-            if cb:
-                cb.update_displays()
-
-        # 4. Apagar LEDs de todos os outros botões de preset
+        # Actions disabled (outras páginas): _set_led() direto no switch
+        # Actions enabled (página atual): update_displays() via framework
         for cb in _state.preset_callbacks:
-            cb.update_displays()
+            if cb.action.enabled:
+                cb.action.update_displays()
+            else:
+                cb._set_led()
+        for cb in _state.fx_callbacks.values():
+            if cb.action.enabled:
+                cb.action.update_displays()
+            else:
+                cb._set_led()
 
     def update_displays(self):
-        is_active = (_state.current_pc == self._pc)
-        self.action.switch_color      = self._color
-        self.action.switch_brightness = 1.0 if is_active else 0.05
         if self.action.label:
             self.action.label.text       = self._text
             self.action.label.back_color = self._color
+        if not self.action.enabled:
+            return
+        is_active = (_state.current_pc == self._pc)
+        self.action.switch_color      = self._color
+        self.action.switch_brightness = 1.0 if is_active else 0.05
 
 
-# ── Callback de toggle de efeito ──────────────────────────────────────────────
+# ── FX callback ────────────────────────────────────────────────────────────────
 
-class _FxCallback(Callback):
+class _FxCallback(_BaseCallback):
     def __init__(self, cc, channel, color_on, color_off, text):
         super().__init__()
         self._cc        = cc
@@ -146,23 +168,28 @@ class _FxCallback(Callback):
         _state.fx_states.setdefault(cc, False)
         _state.fx_callbacks[cc] = self
 
-    def init(self, appl, listener=None):
-        self._appl = appl
-        _state.midi = appl.client.midi
+    def _set_led(self):
+        """Usado apenas para actions FORA da página atual (disabled pelo pager)."""
+        active = _state.fx_states.get(self._cc, False)
+        self.action.switch.color      = self._color_on if active else self._color_off
+        self.action.switch.brightness = 1.0 if active else 0.05
 
     def push(self):
         new_state = not _state.fx_states.get(self._cc, False)
         _state.fx_states[self._cc] = new_state
-        _state.midi.send(_RawMessage([0xB0 | self._channel, self._cc, 127 if new_state else 0]))
-        self.update_displays()
+        self._appl.client.midi.send(_RawMessage([0xB0 | self._channel, self._cc, 127 if new_state else 0]))
+        self._set_led()
 
     def update_displays(self):
         active = _state.fx_states.get(self._cc, False)
-        self.action.switch_color      = self._color_on if active else self._color_off
-        self.action.switch_brightness = 1.0 if active else 0.05
+        color  = self._color_on if active else self._color_off
         if self.action.label:
             self.action.label.text       = self._text
-            self.action.label.back_color = self._color_on if active else self._color_off
+            self.action.label.back_color = color
+        if not self.action.enabled:
+            return
+        self.action.switch_color      = color
+        self.action.switch_brightness = 1.0 if active else 0.05
 
 
 # ── API pública ────────────────────────────────────────────────────────────────
