@@ -247,10 +247,10 @@ class _PageCallback(_BaseCallback):
 
 
 class _PageDirectCallback(_BaseCallback):
-    """Callback para o Switch UP — volta para página A."""
+    """Callback para o Switch UP — recua uma página."""
 
     def push(self):
-        _st.current_page = 0
+        _st.current_page = (_st.current_page - 1) % len(PAGES)
         _refresh_preset_leds()
         _refresh_pager_display()
 
