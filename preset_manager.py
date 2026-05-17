@@ -179,6 +179,12 @@ class _FxCallback(_BaseCallback):
         _state.fx_states[self._cc] = new_state
         self._appl.client.midi.send(_RawMessage([0xB0 | self._channel, self._cc, 127 if new_state else 0]))
         self._set_led()
+        # Atualiza o label do header
+        active = new_state
+        color  = self._color_on if active else self._color_off
+        if self.action.label:
+            self.action.label.text       = self._text
+            self.action.label.back_color = color
 
     def update_displays(self):
         active = _state.fx_states.get(self._cc, False)
