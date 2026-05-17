@@ -7,7 +7,7 @@
 #   A chave é o número do Program Change (0-based, igual ao que a Nano Cortex recebe).
 #
 #   Campos:
-#     "name"  : Nome do preset (uso futuro no display)
+#     "name"  : Nome exibido no display central ao selecionar o preset
 #     "fx"    : Estado inicial de cada efeito ao entrar no preset
 #                 Chave  = número do CC
 #                 Valor  = True (efeito LIGADO) ou False (efeito DESLIGADO)
@@ -64,6 +64,7 @@ PRESETS = {
 
 from pyswitch.controller.actions import Action
 from adafruit_midi.midi_message import MIDIMessage
+from display import DISPLAY_PRESET_NAME as _DISPLAY_PRESET_NAME
 
 
 class _RawMessage(MIDIMessage):
@@ -119,8 +120,6 @@ class _PresetCallback(_BaseCallback):
         _state.appl = appl
 
     def _set_led(self):
-        """Usado apenas para actions FORA da página atual (disabled pelo pager).
-        Afeta todos os pixels do switch pois o framework não gerencia esses."""
         is_active = (_state.current_pc == self._pc)
         self.action.switch.color      = self._color
         self.action.switch.brightness = 1.0 if is_active else 0.05
@@ -129,10 +128,12 @@ class _PresetCallback(_BaseCallback):
         self._appl.client.midi.send(_RawMessage([0xC0 | self._channel, self._pc]))
         _state.current_pc = self._pc
         preset = PRESETS.get(self._pc, {})
+        # Atualiza nome no display central
+        _DISPLAY_PRESET_NAME.text = preset.get("name", "")
+        # Atualiza estados dos efeitos
         for cc, active in preset.get("fx", {}).items():
             _state.fx_states[cc] = active
-        # Actions disabled (outras páginas): _set_led() direto no switch
-        # Actions enabled (página atual): update_displays() via framework
+        # Atualiza LEDs: enabled → framework, disabled → direto no switch
         for cb in _state.preset_callbacks:
             if cb.action.enabled:
                 cb.action.update_displays()
@@ -169,7 +170,6 @@ class _FxCallback(_BaseCallback):
         _state.fx_callbacks[cc] = self
 
     def _set_led(self):
-        """Usado apenas para actions FORA da página atual (disabled pelo pager)."""
         active = _state.fx_states.get(self._cc, False)
         self.action.switch.color      = self._color_on if active else self._color_off
         self.action.switch.brightness = 1.0 if active else 0.05

@@ -1,12 +1,9 @@
-from pyswitch.clients.kemper import KemperRigNameCallback
-from pyswitch.clients.kemper import TunerDisplayCallback
 from micropython import const
 from pyswitch.colors import Colors
 from pyswitch.colors import DEFAULT_LABEL_COLOR
 from pyswitch.ui.ui import DisplayElement
 from pyswitch.ui.ui import DisplayBounds
 from pyswitch.ui.elements import DisplayLabel
-from pyswitch.ui.elements import BidirectionalProtocolState
 
 _ACTION_LABEL_LAYOUT = {
     "font": "/fonts/H20.pcf",
@@ -298,8 +295,31 @@ DISPLAY_LABEL_10 = DisplayLabel(
 )
 
 
-Splashes = TunerDisplayCallback(
-    splash_default = DisplayElement(
+DISPLAY_PRESET_NAME = DisplayLabel(
+    bounds = DisplayBounds(
+        x = 0, 
+        y = 40, 
+        w = 240, 
+        h = 120
+    ), 
+    layout = {
+        "font": "/fonts/PTSans-NarrowBold-40.pcf",
+        "lineSpacing": 0.8,
+        "maxTextWidth": 220,
+    }
+)
+
+from pyswitch.controller.callbacks import Callback
+
+class _StaticSplash(Callback):
+    def __init__(self, root):
+        Callback.__init__(self)
+        self._root = root
+    def get_root(self):
+        return self._root
+
+Splashes = _StaticSplash(
+    DisplayElement(
         bounds = DisplayBounds(
             x = 0, 
             y = 0, 
@@ -307,14 +327,6 @@ Splashes = TunerDisplayCallback(
             h = _DISPLAY_HEIGHT
         ), 
         children = [
-            BidirectionalProtocolState(
-                DisplayBounds(
-                    x = 232, 
-                    y = 40, 
-                    w = 8, 
-                    h = 8
-                )
-            ),
             DISPLAY_HEADER_1,
             DISPLAY_HEADER_2,
             DISPLAY_HEADER_3,
@@ -323,21 +335,7 @@ Splashes = TunerDisplayCallback(
             DISPLAY_HEADER_6,
             DISPLAY_LABEL_1,
             DISPLAY_LABEL_2,
-            DisplayLabel(
-                bounds = DisplayBounds(
-                    x = 0, 
-                    y = 40, 
-                    w = 240, 
-                    h = 120
-                ), 
-                layout = {
-                    "font": "/fonts/PTSans-NarrowBold-40.pcf",
-                    "lineSpacing": 0.8,
-                    "maxTextWidth": 220,
-                    
-                }, 
-                callback = KemperRigNameCallback()
-            ),
+            DISPLAY_PRESET_NAME,
             DISPLAY_LABEL_3,
             DISPLAY_LABEL_4,
             DISPLAY_LABEL_5,
@@ -345,7 +343,6 @@ Splashes = TunerDisplayCallback(
             DISPLAY_LABEL_7,
             DISPLAY_LABEL_8,
             DISPLAY_LABEL_9,
-            
         ]
     )
 )
