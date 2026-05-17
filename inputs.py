@@ -16,7 +16,6 @@ _CH = 0
 
 # ── Cores dos botões de efeito ─────────────────────────────────────────────────
 _OFF  = (0,   0,   0)
-_GATE = (190, 190, 190)
 _FX   = (190, 10,  90)
 
 # ── Pager (troca de página A/B/C/D) ───────────────────────────────────────────
@@ -49,7 +48,7 @@ Inputs = [
             PRESET_SELECT(pc=24, channel=_CH, text="", id=4, enable_callback=_pager.enable_callback),
         ],
         "actionsHold": [
-            EFFECT_TOGGLE(cc=34, channel=_CH, color_on=_GATE, color_off=_OFF, display=DISPLAY_HEADER_1, text="GATE"),
+            EFFECT_TOGGLE(cc=34, channel=_CH, color_on=_FX, color_off=_OFF, display=DISPLAY_HEADER_1, text="GATE"),
         ],
     },
 
