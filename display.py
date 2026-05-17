@@ -145,7 +145,7 @@ DISPLAY_PAGER = DisplayLabel(
     ), 
     layout = {
         "font": "/fonts/PTSans-NarrowBold-40.pcf",
-        "backColor": Colors.BLACK,
+        "backColor": Colors.WHITE,
         "stroke": 1,
         "textColor": Colors.BLACK,
         "maxTextWidth": 240,
