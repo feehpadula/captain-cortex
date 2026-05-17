@@ -171,8 +171,18 @@ class _FxCallback(_BaseCallback):
 
     def _set_led(self):
         active = _state.fx_states.get(self._cc, False)
-        self.action.switch.color      = self._color_on if active else self._color_off
-        self.action.switch.brightness = 1.0 if active else 0.05
+        color  = self._color_on if active else self._color_off
+        bri    = 1.0 if active else 0.05
+        switch = self.action.switch
+        if not switch.pixels:
+            return
+        # Afeta apenas o último pixel do switch (o primeiro é do preset)
+        colors = switch.colors
+        colors[-1] = color
+        switch.colors = colors
+        brightnesses = switch.brightnesses
+        brightnesses[-1] = bri
+        switch.brightnesses = brightnesses
 
     def push(self):
         new_state = not _state.fx_states.get(self._cc, False)
