@@ -116,6 +116,22 @@
 
   .page-tab:hover:not(.active) { border-color: var(--dim); color: var(--text); }
 
+  /* ── Main layout ── */
+  .main-layout {
+    display: flex;
+    gap: 32px;
+    align-items: flex-start;
+  }
+
+  .table-col { flex: 1; min-width: 0; }
+
+  .preview-col {
+    flex-shrink: 0;
+    width: 300px;
+    position: sticky;
+    top: 24px;
+  }
+
   table {
     width: 100%;
     border-collapse: collapse;
@@ -141,8 +157,6 @@
 
   tbody tr:hover { background: var(--row-hover); }
 
-  tbody tr.empty-slot { opacity: 0.3; pointer-events: none; }
-
   td { padding: 10px 12px; vertical-align: middle; }
 
   td.pc {
@@ -152,7 +166,7 @@
     width: 48px;
   }
 
-  td.name-cell { min-width: 180px; }
+  td.name-cell { min-width: 140px; }
 
   .name-input {
     background: transparent;
@@ -170,7 +184,7 @@
   .name-input:hover  { border-color: var(--dim); }
   .name-input:focus  { border-color: var(--cyan); }
 
-  td.fx-col { text-align: center; width: 72px; }
+  td.fx-col { text-align: center; width: 58px; }
 
   .fx-btn {
     display: inline-flex;
@@ -199,7 +213,7 @@
 
   td.actions-cell {
     text-align: right;
-    width: 80px;
+    width: 50px;
   }
 
   .del-btn {
@@ -215,6 +229,179 @@
 
   .del-btn:hover { color: var(--accent); border-color: var(--accent); }
 
+  /* ── Device preview ── */
+  .preview-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+
+  .device {
+    background: #181818;
+    border: 2px solid #2a2a2a;
+    border-radius: 8px;
+    padding: 16px;
+  }
+
+  /* Display */
+  .mc-display {
+    background: #000;
+    border: 1px solid #333;
+    border-radius: 4px;
+    width: 100%;
+    aspect-ratio: 1;
+    margin-bottom: 16px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    position: relative;
+  }
+
+  /* Header rows (FX indicators) */
+  .mc-headers {
+    display: flex;
+    flex-direction: column;
+    height: 25%;
+  }
+
+  .mc-header-row {
+    display: flex;
+    width: 100%;
+    flex: 1;
+  }
+
+  .mc-fx-indicator {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    border: 1px solid #000;
+    color: #e8e8e8;
+    transition: all 0.2s;
+  }
+
+  /* Preset name area */
+  .mc-preset-name {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Space Mono', monospace;
+    font-size: 24px;
+    font-weight: 700;
+    color: #e8e8e8;
+    text-align: center;
+    padding: 8px;
+    word-break: break-word;
+    line-height: 1.3;
+  }
+
+  /* Pager label */
+  .mc-pager {
+    height: 25%;
+    background: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Space Mono', monospace;
+    font-size: 24px;
+    font-weight: 700;
+    color: #000;
+    border-radius: 0 0 3px 3px;
+  }
+
+  /* Switches */
+  .mc-switches {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .mc-row {
+    display: flex;
+    gap: 6px;
+  }
+
+  .mc-switch {
+    flex: 1;
+    background: #222;
+    border: 1px solid #333;
+    border-radius: 4px;
+    padding: 6px 4px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    cursor: pointer;
+    transition: all 0.15s;
+    min-height: 52px;
+  }
+
+  .mc-switch:hover { border-color: #555; }
+
+  .mc-switch.active { border-color: rgba(0,190,190,0.5); }
+
+  .mc-leds {
+    display: flex;
+    gap: 3px;
+  }
+
+  .mc-led {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #222;
+    transition: all 0.2s;
+  }
+
+  .mc-switch-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 8px;
+    color: #777;
+    text-align: center;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 100%;
+    padding: 0 2px;
+  }
+
+  .mc-switch.active .mc-switch-label { color: var(--cyan); }
+
+  .mc-nav {
+    flex: 0 0 36px;
+    background: #222;
+    border: 1px solid #333;
+    border-radius: 4px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    min-height: 52px;
+  }
+
+  .mc-nav-led {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #444;
+  }
+
+  .mc-nav-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 8px;
+    color: #777;
+  }
+
+  /* Output */
   .output-area {
     margin-top: 40px;
     border-top: 1px solid var(--border);
@@ -252,11 +439,7 @@
     margin-bottom: 20px;
   }
 
-  .stat {
-    font-family: 'Space Mono', monospace;
-    font-size: 11px;
-  }
-
+  .stat { font-family: 'Space Mono', monospace; font-size: 11px; }
   .stat-val { color: var(--cyan); }
   .stat-label { color: var(--muted); margin-left: 4px; }
 
@@ -287,17 +470,7 @@
     transition: opacity 0.3s;
     pointer-events: none;
   }
-
   .toast.show { opacity: 1; }
-
-  .page-label {
-    font-family: 'Space Mono', monospace;
-    font-size: 10px;
-    color: var(--muted);
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    margin-bottom: 8px;
-  }
 </style>
 </head>
 <body>
@@ -318,25 +491,66 @@
 </div>
 
 <div class="stats" id="stats"></div>
-
 <div class="pages-tabs" id="pageTabs"></div>
 
-<table>
-  <thead>
-    <tr>
-      <th>PC</th>
-      <th>Preset Name</th>
-      <th class="fx-col">GATE</th>
-      <th class="fx-col">FX 1</th>
-      <th class="fx-col">FX 2</th>
-      <th class="fx-col">FX 3</th>
-      <th class="fx-col">FX 4</th>
-      <th class="fx-col">FX 5</th>
-      <th></th>
-    </tr>
-  </thead>
-  <tbody id="presetTable"></tbody>
-</table>
+<div class="main-layout">
+
+  <!-- Table -->
+  <div class="table-col">
+    <table>
+      <thead>
+        <tr>
+          <th>PC</th>
+          <th>Preset Name</th>
+          <th class="fx-col">GATE</th>
+          <th class="fx-col">FX 1</th>
+          <th class="fx-col">FX 2</th>
+          <th class="fx-col">FX 3</th>
+          <th class="fx-col">FX 4</th>
+          <th class="fx-col">FX 5</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody id="presetTable"></tbody>
+    </table>
+  </div>
+
+  <!-- Device preview -->
+  <div class="preview-col">
+    <div class="preview-label">Device Preview</div>
+    <div class="device">
+
+      <!-- Display -->
+      <div class="mc-display">
+      <div class="mc-headers" id="prev-headers"></div>
+        <div class="mc-preset-name" id="prev-name">—</div>
+        <div class="mc-pager" id="prev-pager">A</div>
+      </div>
+
+      <!-- Switch rows -->
+      <div class="mc-switches">
+        <!-- Row 1: 1 2 3 4 UP -->
+        <div class="mc-row">
+          <div class="mc-switch" id="psw-0"><div class="mc-leds" id="pl-0"></div><div class="mc-switch-label" id="psl-0">1</div></div>
+          <div class="mc-switch" id="psw-1"><div class="mc-leds" id="pl-1"></div><div class="mc-switch-label" id="psl-1">2</div></div>
+          <div class="mc-switch" id="psw-2"><div class="mc-leds" id="pl-2"></div><div class="mc-switch-label" id="psl-2">3</div></div>
+          <div class="mc-switch" id="psw-3"><div class="mc-leds" id="pl-3"></div><div class="mc-switch-label" id="psl-3">4</div></div>
+          <div class="mc-nav"><div class="mc-nav-led" style="background:#333"></div><div class="mc-nav-label">UP</div></div>
+        </div>
+        <!-- Row 2: A B C D DOWN -->
+        <div class="mc-row">
+          <div class="mc-switch" id="psw-4"><div class="mc-leds" id="pl-4"></div><div class="mc-switch-label" id="psl-4">A</div></div>
+          <div class="mc-switch" id="psw-5"><div class="mc-leds" id="pl-5"></div><div class="mc-switch-label" id="psl-5">B</div></div>
+          <div class="mc-switch" id="psw-6"><div class="mc-leds" id="pl-6"></div><div class="mc-switch-label" id="psl-6">C</div></div>
+          <div class="mc-switch" id="psw-7"><div class="mc-leds" id="pl-7"></div><div class="mc-switch-label" id="psl-7">D</div></div>
+          <div class="mc-nav"><div class="mc-nav-led" style="background:#333"></div><div class="mc-nav-label">DN</div></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div>
 
 <div class="output-area">
   <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px">
@@ -346,34 +560,122 @@
       <button class="primary" onclick="downloadOutput()">⬇ Download presets.py</button>
     </div>
   </div>
-  <textarea id="output" readonly placeholder="Click 'Generate presets.py' to see the output..."></textarea>
+  <textarea id="output" readonly placeholder="Click 'Generate & Copy' or 'Download' to see the output..."></textarea>
 </div>
 
 <div class="toast" id="toast"></div>
 
 <script>
-// ── Data ──────────────────────────────────────────────────────────────────────
+const PAGE_NAMES = ["A","B","C","D","E","F","G","H"];
+const FX_KEYS   = ["gate","fx1","fx2","fx3","fx4","fx5"];
+const FX_LABELS = ["GATE","FX 1","FX 2","FX 3","FX 4","FX 5"];
+const SW_LABELS = ["1","2","3","4","A","B","C","D"];
+
+const COLOR_CYAN   = "#00BEBE";
+const COLOR_WHITE  = "#ffffff";
+const COLOR_PINK   = "#BE0A5A";
+const COLOR_OFF    = "#1a1a1a";
+const COLOR_EMPTY  = "#111";
 
 let presets = Array.from({length: 64}, (_, i) => ({
   pc: i, name: '',
   gate: false, fx1: false, fx2: false, fx3: false, fx4: false, fx5: false
 }));
 
-let currentPage = 0;
-const PAGE_NAMES = ["A","B","C","D","E","F","G","H"];
-const FX_KEYS = ["gate","fx1","fx2","fx3","fx4","fx5"];
-const FX_LABELS = ["GATE","FX 1","FX 2","FX 3","FX 4","FX 5"];
-
-// ── Helpers ───────────────────────────────────────────────────────────────────
+let currentPage    = 0;
+let selectedSlot   = -1;  // sw_idx of selected preset on current page (-1 = none)
 
 function nPages() { return Math.ceil(presets.length / 8); }
+function presetsOnPage(page) { return presets.filter(p => Math.floor(p.pc / 8) === page); }
 
-function presetsOnPage(page) {
-  return presets.filter(p => Math.floor(p.pc / 8) === page);
-}
+// ── Preview ───────────────────────────────────────────────────────────────────
 
-function reassignPCs() {
-  presets.forEach((p, i) => { p.pc = i; });
+function renderPreview() {
+  const pagePresets = presetsOnPage(currentPage);
+
+  // FX headers — 2 linhas de 3
+  const headers = document.getElementById("prev-headers");
+  headers.innerHTML = "";
+  const fxState = selectedSlot >= 0 ? pagePresets[selectedSlot] : null;
+  [FX_KEYS.slice(0,3), FX_KEYS.slice(3)].forEach((rowKeys, ri) => {
+    const row = document.createElement("div");
+    row.className = "mc-header-row";
+    rowKeys.forEach((key, ki) => {
+      const globalIdx = ri * 3 + ki;
+      const div = document.createElement("div");
+      div.className = "mc-fx-indicator" + (fxState && fxState[key] ? " active" : "");
+      div.style.color = "#e8e8e8";
+      div.style.background = fxState && fxState[key] ? COLOR_PINK : "transparent";
+      div.style.borderColor = "#000";
+      div.textContent = FX_LABELS[globalIdx];
+      row.appendChild(div);
+    });
+    headers.appendChild(row);
+  });
+
+  // Preset name
+  const nameEl = document.getElementById("prev-name");
+  if (selectedSlot >= 0 && fxState && fxState.name.trim() !== '') {
+    nameEl.textContent = fxState.name;
+    nameEl.style.color = "#e8e8e8";
+  } else {
+    nameEl.textContent = "—";
+    nameEl.style.color = "#333";
+  }
+
+  // Pager label
+  const pageName = PAGE_NAMES[currentPage];
+  const pagerEl  = document.getElementById("prev-pager");
+  if (selectedSlot >= 0 && fxState && fxState.name.trim() !== '') {
+    pagerEl.textContent = `${pageName}${SW_LABELS[selectedSlot]} - ${fxState.pc + 1}`;
+  } else {
+    pagerEl.textContent = pageName;
+  }
+
+  // Switches
+  for (let i = 0; i < 8; i++) {
+    const preset   = pagePresets[i];
+    const swEl     = document.getElementById(`psw-${i}`);
+    const ledsEl   = document.getElementById(`pl-${i}`);
+    const labelEl  = document.getElementById(`psl-${i}`);
+    const isEmpty  = !preset || preset.name.trim() === '';
+    const isActive = (i === selectedSlot) && !isEmpty;
+
+    // LEDs (3 per switch)
+    ledsEl.innerHTML = "";
+    for (let l = 0; l < 3; l++) {
+      const led = document.createElement("div");
+      led.className = "mc-led";
+      if (isEmpty) {
+        led.style.background = COLOR_EMPTY;
+      } else if (isActive) {
+        // First 2 pixels: cyan (preset active), last pixel: FX color
+        if (l < 2) {
+          led.style.background = COLOR_CYAN;
+          led.style.boxShadow  = `0 0 4px ${COLOR_CYAN}`;
+        } else {
+          // Show FX state on last LED if any FX is active
+          const anyFx = preset && FX_KEYS.some(k => preset[k]);
+          led.style.background = anyFx ? COLOR_PINK : COLOR_OFF;
+          if (anyFx) led.style.boxShadow = `0 0 4px ${COLOR_PINK}`;
+        }
+      } else {
+        // Dim white
+        led.style.background = COLOR_WHITE;
+        led.style.opacity    = "0.07";
+      }
+      ledsEl.appendChild(led);
+    }
+
+    // Label
+    labelEl.textContent = SW_LABELS[i];
+    if (!isEmpty) {
+      const num = preset.pc + 1;
+      labelEl.textContent = `${SW_LABELS[i]} · ${num}`;
+    }
+    swEl.className = "mc-switch" + (isActive ? " active" : "");
+    swEl.style.opacity = isEmpty ? "0.25" : "1";
+  }
 }
 
 // ── Render ────────────────────────────────────────────────────────────────────
@@ -386,7 +688,7 @@ function renderTabs() {
     const btn = document.createElement("button");
     btn.className = "page-tab" + (i === currentPage ? " active" : "");
     btn.textContent = `Page ${PAGE_NAMES[i]} (${presetsOnPage(i).filter(p => p.name.trim() !== '').length})`;
-    btn.onclick = () => { currentPage = i; render(); };
+    btn.onclick = () => { currentPage = i; selectedSlot = -1; render(); };
     tabs.appendChild(btn);
   }
 }
@@ -404,13 +706,12 @@ function renderStats() {
 function renderTable() {
   const tbody = document.getElementById("presetTable");
   tbody.innerHTML = "";
-
   const pagePresets = presetsOnPage(currentPage);
-  const pageStart   = currentPage * 8;
 
-  pagePresets.forEach(preset => {
+  pagePresets.forEach((preset, swIdx) => {
     const tr = document.createElement("tr");
     tr.dataset.pc = preset.pc;
+    if (swIdx === selectedSlot) tr.style.background = "rgba(0,190,190,0.05)";
 
     // PC
     const tdPc = document.createElement("td");
@@ -425,12 +726,18 @@ function renderTable() {
     inp.className = "name-input";
     inp.type = "text";
     inp.value = preset.name;
-    inp.oninput = e => { preset.name = e.target.value; renderStats(); renderTabs(); saveSession(); };
+    inp.placeholder = `Slot ${swIdx + 1}`;
+    inp.onfocus = () => { selectedSlot = swIdx; renderPreview(); renderTable(); };
+    inp.oninput = e => {
+      preset.name = e.target.value;
+      selectedSlot = swIdx;
+      renderStats(); renderTabs(); renderPreview(); saveSession();
+    };
     tdName.appendChild(inp);
     tr.appendChild(tdName);
 
     // FX toggles
-    FX_KEYS.forEach((key, ki) => {
+    FX_KEYS.forEach((key) => {
       const td = document.createElement("td");
       td.className = "fx-col";
       const btn = document.createElement("div");
@@ -440,33 +747,27 @@ function renderTable() {
         preset[key] = !preset[key];
         btn.className = "fx-btn" + (preset[key] ? " on" : "");
         btn.textContent = preset[key] ? "ON" : "OFF";
-        saveSession();
+        selectedSlot = swIdx;
+        renderPreview(); saveSession();
       };
       td.appendChild(btn);
       tr.appendChild(td);
     });
 
-    // Delete
+    // Clear
     const tdDel = document.createElement("td");
     tdDel.className = "actions-cell";
     const delBtn = document.createElement("button");
     delBtn.className = "del-btn";
     delBtn.textContent = "×";
-    delBtn.title = "Delete preset";
     delBtn.onclick = () => {
       preset.name = '';
-      preset.gate = false;
-      preset.fx1  = false;
-      preset.fx2  = false;
-      preset.fx3  = false;
-      preset.fx4  = false;
-      preset.fx5  = false;
-      saveSession();
-      render();
+      preset.gate = preset.fx1 = preset.fx2 = preset.fx3 = preset.fx4 = preset.fx5 = false;
+      if (selectedSlot === swIdx) selectedSlot = -1;
+      saveSession(); render();
     };
     tdDel.appendChild(delBtn);
     tr.appendChild(tdDel);
-
     tbody.appendChild(tr);
   });
 }
@@ -475,9 +776,10 @@ function render() {
   renderTabs();
   renderStats();
   renderTable();
+  renderPreview();
 }
 
-// ── Generate presets.py ───────────────────────────────────────────────────────
+// ── Generate ──────────────────────────────────────────────────────────────────
 
 function bool(v) { return v ? "_ON " : "_OFF"; }
 
@@ -485,27 +787,13 @@ function generateOutput() {
   const n = nPages();
   const pageNames = PAGE_NAMES.slice(0, n);
   let out = "";
-
   out += `##############################################################################################################################################\n`;
-  out += `#\n`;
-  out += `# presets.py — Definição dos presets da Nano Cortex\n`;
-  out += `#\n`;
-  out += `# Edite este arquivo para configurar seus presets.\n`;
-  out += `#\n`;
-  out += `# Cada preset ocupa duas linhas:\n`;
-  out += `#   Linha 1: número do PC e nome do preset\n`;
-  out += `#   Linha 2: estado dos efeitos (gate, fx1, fx2, fx3, fx4, fx5)\n`;
-  out += `#\n`;
-  out += `# CCs da Nano Cortex:\n`;
-  out += `#   CC#34 = INPUT GATE | CC#37 = FX 1 | CC#38 = FX 2 | CC#39 = FX 3\n`;
-  out += `#   CC#40 = FX 4       | CC#41 = FX 5\n`;
-  out += `#\n`;
-  out += `# Valores: _ON = ligado, _OFF = desligado\n`;
-  out += `#\n`;
+  out += `#\n# presets.py — Definição dos presets da Nano Cortex\n#\n`;
+  out += `# Cada preset ocupa duas linhas:\n#   Linha 1: número do PC e nome do preset\n#   Linha 2: estado dos efeitos (gate, fx1, fx2, fx3, fx4, fx5)\n#\n`;
+  out += `# CCs da Nano Cortex:\n#   CC#34 = INPUT GATE | CC#37 = FX 1 | CC#38 = FX 2 | CC#39 = FX 3\n#   CC#40 = FX 4       | CC#41 = FX 5\n#\n`;
+  out += `# Valores: _ON = ligado, _OFF = desligado\n#\n`;
   out += `##############################################################################################################################################\n\n`;
-  out += `_ON  = True\n`;
-  out += `_OFF = False\n\n`;
-  out += `_PRESETS_RAW = [\n`;
+  out += `_ON  = True\n_OFF = False\n\n_PRESETS_RAW = [\n`;
 
   for (let page = 0; page < n; page++) {
     const ps = presetsOnPage(page).filter(p => p.name.trim() !== '');
@@ -513,33 +801,15 @@ function generateOutput() {
     out += `\n    # ── Page ${pageNames[page]} ${"─".repeat(68)}\n`;
     out += `    #            gate   fx1    fx2    fx3    fx4    fx5\n\n`;
     ps.forEach(p => {
-      const namePad = JSON.stringify(p.name);
-      out += `    ( ${String(p.pc).padStart(2)}, ${namePad},\n`;
+      out += `    ( ${String(p.pc).padStart(2)}, ${JSON.stringify(p.name)},\n`;
       out += `         ${bool(p.gate)},  ${bool(p.fx1)},  ${bool(p.fx2)},  ${bool(p.fx3)},  ${bool(p.fx4)},  ${bool(p.fx5)}  ),\n\n`;
     });
   }
 
-  out += `]\n\n`;
-  out += `# Converte para o formato esperado pelo preset_manager\n`;
-  out += `PRESETS = {\n`;
-  out += `    pc: {\n`;
-  out += `        'name': name,\n`;
-  out += `        'fx': {\n`;
-  out += `            34: gate,\n`;
-  out += `            37: fx1,\n`;
-  out += `            38: fx2,\n`;
-  out += `            39: fx3,\n`;
-  out += `            40: fx4,\n`;
-  out += `            41: fx5,\n`;
-  out += `        }\n`;
-  out += `    }\n`;
-  out += `    for pc, name, gate, fx1, fx2, fx3, fx4, fx5 in _PRESETS_RAW\n`;
-  out += `}\n\n`;
+  out += `]\n\n# Converte para o formato esperado pelo preset_manager\nPRESETS = {\n    pc: {\n        'name': name,\n        'fx': {\n            34: gate,\n            37: fx1,\n            38: fx2,\n            39: fx3,\n            40: fx4,\n            41: fx5,\n        }\n    }\n    for pc, name, gate, fx1, fx2, fx3, fx4, fx5 in _PRESETS_RAW\n}\n\n`;
   out += `# Numero de paginas calculado automaticamente (8 presets por pagina)\n`;
-  out += `_total     = len(_PRESETS_RAW)\n`;
-  out += `_n_pages   = (_total + 7) // 8\n`;
+  out += `_total     = len(_PRESETS_RAW)\n_n_pages   = (_total + 7) // 8\n`;
   out += `PAGE_NAMES = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'][:_n_pages]\n`;
-
   return out;
 }
 
@@ -572,73 +842,43 @@ function importFile(event) {
   if (!file) return;
   const reader = new FileReader();
   reader.onload = e => {
-    const text = e.target.result;
-    const parsed = parsePresetsFile(text);
-    if (parsed === null) {
-      showToast('Could not parse presets.py');
-      return;
-    }
-    // Reset to 64 blank slots then fill with parsed data
+    const parsed = parsePresetsFile(e.target.result);
+    if (!parsed) { showToast('Could not parse presets.py'); return; }
     presets = Array.from({length: 64}, (_, i) => ({
-      pc: i, name: '',
-      gate: false, fx1: false, fx2: false, fx3: false, fx4: false, fx5: false
+      pc: i, name: '', gate: false, fx1: false, fx2: false, fx3: false, fx4: false, fx5: false
     }));
-    parsed.forEach(p => {
-      if (p.pc >= 0 && p.pc < 64) presets[p.pc] = p;
-    });
-    currentPage = 0;
+    parsed.forEach(p => { if (p.pc >= 0 && p.pc < 64) presets[p.pc] = p; });
+    currentPage = 0; selectedSlot = -1;
     render();
-    showToast(`Imported ${parsed.length} presets \u2713`);
+    showToast(`Imported ${parsed.length} presets ✓`);
     saveSession();
   };
   reader.readAsText(file);
-  // Reset input so same file can be re-imported
   event.target.value = '';
 }
 
 function parsePresetsFile(text) {
   try {
     const parsed = [];
-    // Match each tuple: ( pc, "name", val, val, val, val, val, val )
-    // Handles both single and double quoted names, _ON/_OFF or True/False
     const tupleRe = /\(\s*(\d+)\s*,\s*(['"])([^'"]*?)\2\s*,\s*([\s\S]*?)\)/g;
     let match;
     while ((match = tupleRe.exec(text)) !== null) {
       const pc   = parseInt(match[1]);
       const name = match[3];
-      const vals = match[4]
-        .split(',')
-        .map(s => s.trim())
-        .filter(s => s.length > 0)
-        .map(s => s === '_ON' || s === 'True');
-      if (vals.length === 6) {
-        parsed.push({
-          pc,
-          name,
-          gate: vals[0],
-          fx1:  vals[1],
-          fx2:  vals[2],
-          fx3:  vals[3],
-          fx4:  vals[4],
-          fx5:  vals[5],
-        });
-      }
+      const vals = match[4].split(',').map(s => s.trim()).filter(s => s.length > 0).map(s => s === '_ON' || s === 'True');
+      if (vals.length === 6) parsed.push({ pc, name, gate: vals[0], fx1: vals[1], fx2: vals[2], fx3: vals[3], fx4: vals[4], fx5: vals[5] });
     }
     return parsed.length > 0 ? parsed : null;
-  } catch(e) {
-    return null;
-  }
+  } catch(e) { return null; }
 }
 
 function loadDefault() {
   if (!confirm("Reset all presets to defaults?")) return;
   presets = Array.from({length: 64}, (_, i) => ({
-    pc: i, name: '',
-    gate: false, fx1: false, fx2: false, fx3: false, fx4: false, fx5: false
+    pc: i, name: '', gate: false, fx1: false, fx2: false, fx3: false, fx4: false, fx5: false
   }));
-  currentPage = 0;
-  render();
-  saveSession();
+  currentPage = 0; selectedSlot = -1;
+  render(); saveSession();
   showToast("Presets reset to defaults ✓");
 }
 
@@ -649,7 +889,6 @@ function showToast(msg) {
   setTimeout(() => t.classList.remove("show"), 2200);
 }
 
-// ── Init ──────────────────────────────────────────────────────────────────────
 function saveSession() {
   localStorage.setItem('cc_presets', JSON.stringify(presets));
   localStorage.setItem('cc_page', currentPage);
@@ -670,9 +909,7 @@ function loadSession() {
   return false;
 }
 
-if (!loadSession()) {
-  // first visit — blank slate
-}
+loadSession();
 render();
 </script>
 </body>
