@@ -260,6 +260,20 @@
   .stat-val { color: var(--cyan); }
   .stat-label { color: var(--muted); margin-left: 4px; }
 
+  .btn-import {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    padding: 8px 16px;
+    border: 1px solid var(--cyan);
+    background: transparent;
+    color: var(--cyan);
+    cursor: pointer;
+    letter-spacing: 0.5px;
+    transition: all 0.15s;
+    display: inline-block;
+  }
+  .btn-import:hover { background: rgba(0,190,190,0.08); }
+
   .toast {
     position: fixed;
     bottom: 24px;
@@ -294,7 +308,11 @@
 </header>
 
 <div class="toolbar">
-  <button class="cyan" onclick="loadDefault()">↺ Load Default</button>
+  <button class="cyan" onclick="loadDefault()">↺ Reset</button>
+  <label class="btn-import">
+    ⬆ Import presets.py
+    <input type="file" accept=".py" onchange="importFile(event)" style="display:none">
+  </label>
   <button class="primary" onclick="generateAndShow()">⬇ Generate presets.py</button>
   <button onclick="copyOutput()">⎘ Copy to Clipboard</button>
 </div>
@@ -526,6 +544,68 @@ function copyOutput() {
   const txt = document.getElementById("output").value;
   if (!txt) { generateAndShow(); return; }
   navigator.clipboard.writeText(txt).then(() => showToast("Copied to clipboard ✓"));
+}
+
+function importFile(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    const text = e.target.result;
+    const parsed = parsePresetsFile(text);
+    if (parsed === null) {
+      showToast('Could not parse presets.py');
+      return;
+    }
+    // Reset to 64 blank slots then fill with parsed data
+    presets = Array.from({length: 64}, (_, i) => ({
+      pc: i, name: '',
+      gate: false, fx1: false, fx2: false, fx3: false, fx4: false, fx5: false
+    }));
+    parsed.forEach(p => {
+      if (p.pc >= 0 && p.pc < 64) presets[p.pc] = p;
+    });
+    currentPage = 0;
+    render();
+    showToast(`Imported ${parsed.length} presets \u2713`);
+  };
+  reader.readAsText(file);
+  // Reset input so same file can be re-imported
+  event.target.value = '';
+}
+
+function parsePresetsFile(text) {
+  try {
+    const parsed = [];
+    // Match each tuple: ( pc, "name", val, val, val, val, val, val )
+    // Handles both single and double quoted names, _ON/_OFF or True/False
+    const tupleRe = /\(\s*(\d+)\s*,\s*(['"])([^'"]*?)\2\s*,\s*([\s\S]*?)\)/g;
+    let match;
+    while ((match = tupleRe.exec(text)) !== null) {
+      const pc   = parseInt(match[1]);
+      const name = match[3];
+      const vals = match[4]
+        .split(',')
+        .map(s => s.trim())
+        .filter(s => s.length > 0)
+        .map(s => s === '_ON' || s === 'True');
+      if (vals.length === 6) {
+        parsed.push({
+          pc,
+          name,
+          gate: vals[0],
+          fx1:  vals[1],
+          fx2:  vals[2],
+          fx3:  vals[3],
+          fx4:  vals[4],
+          fx5:  vals[5],
+        });
+      }
+    }
+    return parsed.length > 0 ? parsed : null;
+  } catch(e) {
+    return null;
+  }
 }
 
 function loadDefault() {
