@@ -313,8 +313,8 @@
     ⬆ Import presets.py
     <input type="file" accept=".py" onchange="importFile(event)" style="display:none">
   </label>
-  <button class="primary" onclick="generateAndShow()">⬇ Generate presets.py</button>
-  <button onclick="copyOutput()">⎘ Copy to Clipboard</button>
+  <button onclick="copyOutput()">⎘ Generate &amp; Copy</button>
+  <button class="primary" onclick="downloadOutput()">⬇ Download presets.py</button>
 </div>
 
 <div class="stats" id="stats"></div>
@@ -339,7 +339,13 @@
 </table>
 
 <div class="output-area">
-  <div class="output-label">presets.py output</div>
+  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px">
+    <div class="output-label" style="margin-bottom:0">presets.py output</div>
+    <div style="display:flex; gap:8px">
+      <button onclick="copyOutput()">⎘ Generate &amp; Copy</button>
+      <button class="primary" onclick="downloadOutput()">⬇ Download presets.py</button>
+    </div>
+  </div>
   <textarea id="output" readonly placeholder="Click 'Generate presets.py' to see the output..."></textarea>
 </div>
 
@@ -543,10 +549,22 @@ function generateAndShow() {
   showToast("presets.py generated ✓");
 }
 
+function downloadOutput() {
+  const txt = generateOutput();
+  document.getElementById("output").value = txt;
+  const blob = new Blob([txt], { type: 'text/plain' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'presets.py';
+  a.click();
+  URL.revokeObjectURL(a.href);
+  showToast('presets.py downloaded ✓');
+}
+
 function copyOutput() {
-  const txt = document.getElementById("output").value;
-  if (!txt) { generateAndShow(); return; }
-  navigator.clipboard.writeText(txt).then(() => showToast("Copied to clipboard ✓"));
+  const txt = generateOutput();
+  document.getElementById("output").value = txt;
+  navigator.clipboard.writeText(txt).then(() => showToast("Generated & copied ✓"));
 }
 
 function importFile(event) {
