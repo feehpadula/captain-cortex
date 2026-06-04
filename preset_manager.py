@@ -2,61 +2,11 @@
 #
 # preset_manager.py — Gerenciador de presets e paginação para Nano Cortex
 #
-# COMO EDITAR:
-#   Cada entrada em PRESETS representa um preset da Nano Cortex.
-#   A chave é o número do Program Change (0-based).
-#
-#   Campos:
-#     "name"  : Nome exibido no display central
-#     "fx"    : Estado inicial de cada efeito
-#                 Chave = CC number, Valor = True (ligado) / False (desligado)
-#
-#   CCs da Nano Cortex:
-#     34 = INPUT GATE
-#     37 = FX Slot 1
-#     38 = FX Slot 2
-#     39 = FX Slot 3
-#     40 = FX Slot 4
-#     41 = FX Slot 5
-#     42 = Tap Tempo
+# Os presets são definidos em presets.py — edite aquele arquivo.
 #
 ##############################################################################################################################################
 
-PRESETS = {
-    #      name           Gate   FX1    FX2    FX3    FX4    FX5
-    0:  { "name": "Preset 1",  "fx": { 34: False, 37: False, 38: False, 39: False, 40: False, 41: False } },
-    1:  { "name": "Preset 2",  "fx": { 34: False, 37: True,  38: False, 39: False, 40: False, 41: False } },
-    2:  { "name": "Preset 3",  "fx": { 34: False, 37: True,  38: True,  39: False, 40: False, 41: False } },
-    3:  { "name": "Preset 4",  "fx": { 34: False, 37: False, 38: False, 39: True,  40: True,  41: False } },
-    4:  { "name": "Preset 5",  "fx": { 34: False, 37: False, 38: False, 39: False, 40: True,  41: True  } },
-    5:  { "name": "Preset 6",  "fx": { 34: True,  37: False, 38: False, 39: False, 40: False, 41: False } },
-    6:  { "name": "Preset 7",  "fx": { 34: False, 37: True,  38: False, 39: True,  40: False, 41: False } },
-    7:  { "name": "Preset 8",  "fx": { 34: False, 37: False, 38: True,  39: False, 40: True,  41: False } },
-    8:  { "name": "Preset 9",  "fx": { 34: False, 37: False, 38: False, 39: False, 40: False, 41: False } },
-    9:  { "name": "Preset 10", "fx": { 34: False, 37: True,  38: False, 39: False, 40: False, 41: False } },
-    10: { "name": "Preset 11", "fx": { 34: False, 37: False, 38: True,  39: False, 40: False, 41: False } },
-    11: { "name": "Preset 12", "fx": { 34: False, 37: False, 38: False, 39: True,  40: False, 41: False } },
-    12: { "name": "Preset 13", "fx": { 34: False, 37: False, 38: False, 39: False, 40: True,  41: False } },
-    13: { "name": "Preset 14", "fx": { 34: False, 37: False, 38: False, 39: False, 40: False, 41: True  } },
-    14: { "name": "Preset 15", "fx": { 34: True,  37: True,  38: False, 39: False, 40: False, 41: False } },
-    15: { "name": "Preset 16", "fx": { 34: False, 37: True,  38: True,  39: True,  40: False, 41: False } },
-    16: { "name": "Preset 17", "fx": { 34: False, 37: False, 38: False, 39: False, 40: False, 41: False } },
-    17: { "name": "Preset 18", "fx": { 34: False, 37: True,  38: False, 39: False, 40: False, 41: False } },
-    18: { "name": "Preset 19", "fx": { 34: False, 37: False, 38: True,  39: False, 40: False, 41: False } },
-    19: { "name": "Preset 20", "fx": { 34: False, 37: False, 38: False, 39: True,  40: False, 41: False } },
-    20: { "name": "Preset 21", "fx": { 34: False, 37: False, 38: False, 39: False, 40: True,  41: False } },
-    21: { "name": "Preset 22", "fx": { 34: False, 37: False, 38: False, 39: False, 40: False, 41: True  } },
-    22: { "name": "Preset 23", "fx": { 34: True,  37: True,  38: True,  39: False, 40: False, 41: False } },
-    23: { "name": "Preset 24", "fx": { 34: False, 37: True,  38: True,  39: True,  40: True,  41: False } },
-    24: { "name": "Preset 25", "fx": { 34: False, 37: False, 38: False, 39: False, 40: False, 41: False } },
-    25: { "name": "Preset 26", "fx": { 34: False, 37: True,  38: False, 39: False, 40: False, 41: False } },
-    26: { "name": "Preset 27", "fx": { 34: False, 37: False, 38: True,  39: False, 40: False, 41: False } },
-    27: { "name": "Preset 28", "fx": { 34: False, 37: False, 38: False, 39: True,  40: False, 41: False } },
-    28: { "name": "Preset 29", "fx": { 34: False, 37: False, 38: False, 39: False, 40: True,  41: False } },
-    29: { "name": "Preset 30", "fx": { 34: False, 37: False, 38: False, 39: False, 40: False, 41: True  } },
-    30: { "name": "Preset 31", "fx": { 34: True,  37: False, 38: True,  39: False, 40: True,  41: False } },
-    31: { "name": "Preset 32", "fx": { 34: True,  37: True,  38: True,  39: True,  40: True,  41: True  } },
-}
+from presets import PRESETS
 
 ##############################################################################################################################################
 # Implementação interna — não editar abaixo desta linha
