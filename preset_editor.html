@@ -790,6 +790,7 @@ function renderTable() {
     inp.className = "name-input";
     inp.type = "text";
     inp.value = preset.name;
+    inp.maxLength = 48;
     inp.placeholder = `Slot ${swIdx + 1}`;
     inp.onfocus = () => { selectedSlot = swIdx; renderPreview(); };
     inp.oninput = e => {
