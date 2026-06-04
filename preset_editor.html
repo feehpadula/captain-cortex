@@ -727,6 +727,11 @@ function renderPreview() {
     }
     swEl.className = "mc-switch" + (isActive ? " active" : "");
     swEl.style.opacity = isEmpty ? "0.25" : "1";
+    // Click no switch foca o input do preset correspondente
+    swEl.onclick = () => {
+      const inp = document.querySelector(`tr[data-pc="${preset.pc}"] .name-input`);
+      if (inp) { selectedSlot = i; inp.focus(); renderPreview(); renderTable(); }
+    };
   }
 
   // UP e DOWN leds dim sempre acesos
