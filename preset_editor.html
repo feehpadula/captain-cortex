@@ -419,7 +419,7 @@ function renderTable() {
     inp.className = "name-input";
     inp.type = "text";
     inp.value = preset.name;
-    inp.oninput = e => { preset.name = e.target.value; renderStats(); renderTabs(); };
+    inp.oninput = e => { preset.name = e.target.value; renderStats(); renderTabs(); saveSession(); };
     tdName.appendChild(inp);
     tr.appendChild(tdName);
 
@@ -434,6 +434,7 @@ function renderTable() {
         preset[key] = !preset[key];
         btn.className = "fx-btn" + (preset[key] ? " on" : "");
         btn.textContent = preset[key] ? "ON" : "—";
+        saveSession();
       };
       td.appendChild(btn);
       tr.appendChild(td);
@@ -454,6 +455,7 @@ function renderTable() {
       preset.fx3  = false;
       preset.fx4  = false;
       preset.fx5  = false;
+      saveSession();
       render();
     };
     tdDel.appendChild(delBtn);
@@ -569,6 +571,7 @@ function importFile(event) {
     currentPage = 0;
     render();
     showToast(`Imported ${parsed.length} presets \u2713`);
+    saveSession();
   };
   reader.readAsText(file);
   // Reset input so same file can be re-imported
@@ -617,6 +620,7 @@ function loadDefault() {
   }));
   currentPage = 0;
   render();
+  saveSession();
   showToast("Presets reset to defaults ✓");
 }
 
@@ -628,6 +632,29 @@ function showToast(msg) {
 }
 
 // ── Init ──────────────────────────────────────────────────────────────────────
+function saveSession() {
+  localStorage.setItem('cc_presets', JSON.stringify(presets));
+  localStorage.setItem('cc_page', currentPage);
+}
+
+function loadSession() {
+  const saved = localStorage.getItem('cc_presets');
+  if (saved) {
+    try {
+      const data = JSON.parse(saved);
+      if (Array.isArray(data) && data.length > 0) {
+        presets = data;
+        currentPage = parseInt(localStorage.getItem('cc_page') || '0');
+        return true;
+      }
+    } catch(e) {}
+  }
+  return false;
+}
+
+if (!loadSession()) {
+  // first visit — blank slate
+}
 render();
 </script>
 </body>
