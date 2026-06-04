@@ -36,10 +36,13 @@ The Nano Cortex TRS MIDI input receives Program Change and Control Change messag
 
 ### Added
 - **`preset_manager.py`** — a complete custom preset and paging system built from scratch, including:
-  - 4-page navigation (A/B/C/D) with UP/DOWN switches, giving access to 32 presets
+  - Up to 8 pages (A–H) of navigation with UP/DOWN switches, giving access to up to 64 presets — page count adjusts automatically based on how many presets are defined
   - Per-preset FX state definition (which effects are on/off when a preset loads)
   - Direct NeoPixel LED control, bypassing the pyswitch segment system to avoid conflicts between actions sharing the same physical switch
+  - Empty preset slots (no name defined) have their LED turned off and button blocked — no MIDI is sent
   - **Tap Tempo** mode with visual BPM feedback on the display and pulsing LED
+- **`presets.py`** — separate file for preset configuration, easy to read and edit
+- **`preset_editor.html`** — browser-based visual editor for `presets.py` (see below)
 - **`DISPLAY_PAGER`** label — shows current page and active preset reference (e.g. `A3 - 3`)
 - **`DISPLAY_PRESET_NAME`** label — shows the name of the active preset in large text
 
@@ -82,10 +85,12 @@ The Nano Cortex TRS MIDI input receives Program Change and Control Change messag
 | B | Select preset slot 6 of current page | Toggle FX Slot 2 (CC#38) |
 | C | Select preset slot 7 of current page | Toggle FX Slot 3 (CC#39) |
 | D | Select preset slot 8 of current page | Toggle FX Slot 4 (CC#40) |
-| UP | Go to previous page (A→D wraps) | Enter **Tap Tempo mode** |
-| DOWN | Go to next page (D→A wraps) | Toggle FX Slot 5 (CC#41) |
+| UP | Go to previous page (wraps A↔H) | Enter **Tap Tempo mode** |
+| DOWN | Go to next page (wraps H↔A) | Toggle FX Slot 5 (CC#41) |
 
 ### Preset Pages
+
+Pages are assigned automatically based on the number of presets defined in `presets.py`. Each page holds 8 preset slots:
 
 | Page | Presets |
 |---|---|
@@ -93,13 +98,18 @@ The Nano Cortex TRS MIDI input receives Program Change and Control Change messag
 | B | 9 – 16 (PC 8–15) |
 | C | 17 – 24 (PC 16–23) |
 | D | 25 – 32 (PC 24–31) |
+| E | 33 – 40 (PC 32–39) |
+| F | 41 – 48 (PC 40–47) |
+| G | 49 – 56 (PC 48–55) |
+| H | 57 – 64 (PC 56–63) |
 
 ### LED Colors
 
 | Color | Meaning |
 |---|---|
 | Cyan (bright) | Active preset |
-| White (dim) | Inactive preset |
+| White (dim) | Inactive preset slots |
+| Black (off) | Empty slot — no preset defined |
 | Magenta/Pink (bright) | FX slot active |
 | Black (off) | FX slot inactive |
 
@@ -134,20 +144,52 @@ Hold **Switch UP** for ~600ms to enter Tap Tempo mode:
 
 ## Configuring Your Presets
 
-Edit the `PRESETS` dictionary at the top of `preset_manager.py`:
+### Using the visual editor (recommended)
+
+Open `preset_editor.html` in any browser — no server needed, works directly from the file system.
+
+The editor lets you:
+- **Name** each preset slot
+- **Toggle** each FX slot on or off per preset
+- **Import** an existing `presets.py` to continue editing it
+- **Download** the generated `presets.py` ready to copy to the device
+- Session is **automatically saved** in the browser — your work is preserved between visits
+
+Empty slots (no name) are not generated in the output file. On the device, their LED is off and the button does nothing.
+
+### Editing presets.py manually
+
+Presets are defined in `presets.py`. Each preset takes two lines — the name on one line and the FX states on the next, making it easy to edit without breaking column alignment:
 
 ```python
-PRESETS = {
-    0:  { "name": "Clean",  "fx": { 34: False, 37: False, 38: True,  39: False, 40: True,  41: True  } },
-    1:  { "name": "Crunch", "fx": { 34: True,  37: True,  38: False, 39: False, 40: True,  41: False } },
-    2:  { "name": "Lead",   "fx": { 34: True,  37: True,  38: True,  39: True,  40: True,  41: True  } },
-    # ... up to preset 31
-}
+_PRESETS_RAW = [
+
+    # ── Page A ──────────────────────────────────────────────────────────────
+    #            gate   fx1    fx2    fx3    fx4    fx5
+
+    (  0, "Clean",
+         _OFF,  _OFF,  _OFF,  _OFF,  _ON,   _ON   ),
+
+    (  1, "Crunch",
+         _ON,   _ON,   _OFF,  _OFF,  _ON,   _OFF  ),
+]
 ```
 
-- The **key** is the PC number (0-based, matching what the Nano Cortex receives)
-- `"name"` is shown in the center display when the preset is selected
-- `"fx"` defines which FX slots should be on (`True`) or off (`False`) when the preset loads — this is tracked locally, since the Nano Cortex does not send state back over TRS
+- The first value is the PC number (0-based)
+- `_ON` / `_OFF` map to FX slots: Gate, FX1, FX2, FX3, FX4, FX5
+- The number of pages adjusts automatically — no need to configure anything else
+- Slots left undefined will have their LED off and button disabled on the device
+
+---
+
+## Installing
+
+1. Connect the MIDI Captain to your computer via USB while holding **Switch 1 (GP1)** — a drive will appear on your computer
+2. Copy all project files into the root of that drive:
+   - `code.py`, `boot.py`, `config.py`, `communication.py`, `display.py`, `inputs.py`
+   - `preset_manager.py`, `presets.py`
+   - The entire `lib/` folder
+3. Eject the drive and reconnect normally — the firmware will start automatically
 
 ---
 
@@ -174,6 +216,8 @@ captain-cortex/
 ├── display.py           # Display layout and label definitions
 ├── inputs.py            # Switch assignments
 ├── preset_manager.py    # Custom paging, preset selection, FX toggles, tap tempo
+├── presets.py           # Preset definitions — edit this to configure your presets
+├── preset_editor.html   # Visual browser-based preset editor
 ├── gerar_boot.py        # Helper script to regenerate logo.bmp on Windows
 └── lib/                 # CircuitPython libraries (pyswitch, adafruit_midi, etc.)
 ```
@@ -190,7 +234,7 @@ captain-cortex/
 
 ## Notes
 
-- The Nano Cortex **only outputs MIDI feedback via USB**, not TRS. This means the controller cannot receive preset names or FX states from the amp — all state is managed locally based on what you define in `PRESETS`.
+- The Nano Cortex **only outputs MIDI feedback via USB**, not TRS. This means the controller cannot receive preset names or FX states from the amp — all state is managed locally based on what you define in `presets.py`.
 - If you need bidirectional communication (so the controller always reflects the true state of the Nano Cortex), a computer running a MIDI bridge script (`midi_bridge.py`, included) can route USB MIDI between the two devices.
 - This project was built and tested with the **MIDI Captain 10**. Other MIDI Captain models would require changes to `inputs.py` and the hardware device imports.
 
