@@ -727,11 +727,6 @@ function renderPreview() {
     }
     swEl.className = "mc-switch" + (isActive ? " active" : "");
     swEl.style.opacity = isEmpty ? "0.25" : "1";
-    // Click no switch foca o input do preset correspondente
-    swEl.onclick = () => {
-      const inp = document.querySelector(`tr[data-pc="${preset.pc}"] .name-input`);
-      if (inp) { selectedSlot = i; inp.focus(); renderPreview(); renderTable(); }
-    };
   }
 
   // UP e DOWN leds dim sempre acesos
@@ -796,7 +791,7 @@ function renderTable() {
     inp.type = "text";
     inp.value = preset.name;
     inp.placeholder = `Slot ${swIdx + 1}`;
-    inp.onfocus = () => { selectedSlot = swIdx; renderPreview(); renderTable(); };
+    inp.onfocus = () => { selectedSlot = swIdx; renderPreview(); };
     inp.oninput = e => {
       preset.name = e.target.value;
       selectedSlot = swIdx;
@@ -846,6 +841,24 @@ function render() {
   renderStats();
   renderTable();
   renderPreview();
+  // Registra clicks nos switches da visualização uma única vez por render
+  const pagePresets = presetsOnPage(currentPage);
+  for (let i = 0; i < 8; i++) {
+    const swEl  = document.getElementById(`psw-${i}`);
+    const preset = pagePresets[i];
+    if (!swEl || !preset) continue;
+    swEl.onclick = (function(pc, slot) {
+      return function() {
+        selectedSlot = slot;
+        renderPreview();
+        document.querySelectorAll('#presetTable tr').forEach((tr, idx) => {
+          tr.style.background = idx === slot ? 'rgba(0,190,190,0.05)' : '';
+        });
+        const inp = document.querySelector('tr[data-pc="' + pc + '"] .name-input');
+        if (inp) inp.focus();
+      };
+    })(preset.pc, i);
+  }
 }
 
 // ── Generate ──────────────────────────────────────────────────────────────────
