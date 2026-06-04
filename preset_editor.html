@@ -349,6 +349,8 @@
 
   .mc-leds {
     display: flex;
+    flex-direction: column;
+    align-items: center;
     gap: 3px;
   }
 
@@ -384,7 +386,7 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 4px;
+    gap: 3px;
     min-height: 52px;
   }
 
@@ -535,7 +537,11 @@
           <div class="mc-switch" id="psw-1"><div class="mc-leds" id="pl-1"></div><div class="mc-switch-label" id="psl-1">2</div></div>
           <div class="mc-switch" id="psw-2"><div class="mc-leds" id="pl-2"></div><div class="mc-switch-label" id="psl-2">3</div></div>
           <div class="mc-switch" id="psw-3"><div class="mc-leds" id="pl-3"></div><div class="mc-switch-label" id="psl-3">4</div></div>
-          <div class="mc-nav"><div class="mc-nav-led" style="background:#333"></div><div class="mc-nav-label">UP</div></div>
+          <div class="mc-nav" id="nav-up">
+            <div style="display:flex;gap:3px"><div class="mc-nav-led"></div><div class="mc-nav-led"></div></div>
+            <div class="mc-nav-led"></div>
+            <div class="mc-nav-label">UP</div>
+          </div>
         </div>
         <!-- Row 2: A B C D DOWN -->
         <div class="mc-row">
@@ -543,7 +549,11 @@
           <div class="mc-switch" id="psw-5"><div class="mc-leds" id="pl-5"></div><div class="mc-switch-label" id="psl-5">B</div></div>
           <div class="mc-switch" id="psw-6"><div class="mc-leds" id="pl-6"></div><div class="mc-switch-label" id="psl-6">C</div></div>
           <div class="mc-switch" id="psw-7"><div class="mc-leds" id="pl-7"></div><div class="mc-switch-label" id="psl-7">D</div></div>
-          <div class="mc-nav"><div class="mc-nav-led" style="background:#333"></div><div class="mc-nav-label">DN</div></div>
+          <div class="mc-nav" id="nav-down">
+            <div class="mc-nav-led"></div>
+            <div style="display:flex;gap:3px"><div class="mc-nav-led"></div><div class="mc-nav-led"></div></div>
+            <div class="mc-nav-label">DN</div>
+          </div>
         </div>
       </div>
 
@@ -641,41 +651,95 @@ function renderPreview() {
     const isEmpty  = !preset || preset.name.trim() === '';
     const isActive = (i === selectedSlot) && !isEmpty;
 
-    // LEDs (3 per switch)
     ledsEl.innerHTML = "";
-    for (let l = 0; l < 3; l++) {
+
+    // Switches 0-3 (1,2,3,4): 2 leds em cima + 1 em baixo
+    // Switches 4-7 (A,B,C,D): 1 led em cima + 1 em baixo
+    // Layout SVG simula a disposição circular real
+
+    if (i < 4) {
+      // Row top: 2 leds (preset)
+      const top = document.createElement("div");
+      top.style.cssText = "display:flex;gap:3px;";
+      for (let l = 0; l < 2; l++) {
+        const led = document.createElement("div");
+        led.className = "mc-led";
+        if (isEmpty) led.style.background = COLOR_EMPTY;
+        else if (isActive) { led.style.background = COLOR_CYAN; led.style.boxShadow = `0 0 4px ${COLOR_CYAN}`; }
+        else { led.style.background = COLOR_WHITE; led.style.opacity = "0.4"; }
+        top.appendChild(led);
+      }
+      ledsEl.appendChild(top);
+
+      // Bottom: 1 led (GATE no switch 1, preset nos outros)
+      const bot = document.createElement("div");
       const led = document.createElement("div");
       led.className = "mc-led";
-      if (isEmpty) {
-        led.style.background = COLOR_EMPTY;
-      } else if (isActive) {
-        // First 2 pixels: cyan (preset active), last pixel: FX color
-        if (l < 2) {
-          led.style.background = COLOR_CYAN;
-          led.style.boxShadow  = `0 0 4px ${COLOR_CYAN}`;
-        } else {
-          // Show FX state on last LED if any FX is active
-          const anyFx = preset && FX_KEYS.some(k => preset[k]);
-          led.style.background = anyFx ? COLOR_PINK : COLOR_OFF;
-          if (anyFx) led.style.boxShadow = `0 0 4px ${COLOR_PINK}`;
-        }
+      if (i === 0) {
+        // Switch 1: led inferior = GATE — acende se fxState tem gate, independente de ser o slot ativo
+        const gateOn = fxState && fxState.gate;
+        led.style.background = gateOn ? COLOR_PINK : (isEmpty ? COLOR_EMPTY : COLOR_WHITE);
+        if (gateOn) led.style.boxShadow = `0 0 4px ${COLOR_PINK}`;
+        if (!gateOn && !isEmpty) led.style.opacity = "0.1";
       } else {
-        // Dim white
-        led.style.background = COLOR_WHITE;
-        led.style.opacity    = "0.07";
+        if (isEmpty) led.style.background = COLOR_EMPTY;
+        else if (isActive) { led.style.background = COLOR_CYAN; led.style.boxShadow = `0 0 4px ${COLOR_CYAN}`; }
+        else { led.style.background = COLOR_WHITE; led.style.opacity = "0.4"; }
       }
-      ledsEl.appendChild(led);
+      bot.appendChild(led);
+      ledsEl.appendChild(bot);
+
+    } else {
+      // A, B, C, D: 1 led em cima (FX) + 2 em baixo (preset)
+      const fxKeys = ["fx1","fx2","fx3","fx4"];
+      const fxKey  = fxKeys[i - 4];
+      // FX acende se fxState (preset em edição) tem aquele FX ativo
+      const fxOn   = fxState && fxState[fxKey];
+
+      // Top: FX
+      const top = document.createElement("div");
+      const topLed = document.createElement("div");
+      topLed.className = "mc-led";
+      topLed.style.background = fxOn ? COLOR_PINK : (isEmpty ? COLOR_EMPTY : COLOR_WHITE);
+      if (!fxOn && !isEmpty) topLed.style.opacity = "0.1";
+      else topLed.style.opacity = "1";
+      top.appendChild(topLed);
+      ledsEl.appendChild(top);
+
+      // Bottom: 2 leds (preset)
+      const bot = document.createElement("div");
+      bot.style.cssText = "display:flex;gap:3px;";
+      for (let l = 0; l < 2; l++) {
+        const botLed = document.createElement("div");
+        botLed.className = "mc-led";
+        if (isEmpty) botLed.style.background = COLOR_EMPTY;
+        else if (isActive) { botLed.style.background = COLOR_CYAN; botLed.style.boxShadow = `0 0 4px ${COLOR_CYAN}`; }
+        else { botLed.style.background = COLOR_WHITE; botLed.style.opacity = "0.4"; }
+        bot.appendChild(botLed);
+      }
+      ledsEl.appendChild(bot);
     }
 
     // Label
     labelEl.textContent = SW_LABELS[i];
     if (!isEmpty) {
-      const num = preset.pc + 1;
-      labelEl.textContent = `${SW_LABELS[i]} · ${num}`;
+      labelEl.textContent = `${SW_LABELS[i]} · ${preset.pc + 1}`;
     }
     swEl.className = "mc-switch" + (isActive ? " active" : "");
     swEl.style.opacity = isEmpty ? "0.25" : "1";
   }
+
+  // UP e DOWN leds dim sempre acesos
+  document.querySelectorAll('#nav-up .mc-nav-led').forEach(l => { l.style.background = COLOR_WHITE; l.style.opacity = '0.4'; });
+  const downLeds = document.querySelectorAll('#nav-down .mc-nav-led');
+  const fx5On = fxState && fxState.fx5;
+  if (downLeds.length >= 1) {
+    downLeds[0].style.background = fx5On ? COLOR_PINK : COLOR_WHITE;
+    downLeds[0].style.opacity     = fx5On ? '1' : '0.1';
+    downLeds[0].style.boxShadow   = fx5On ? `0 0 4px ${COLOR_PINK}` : 'none';
+  }
+  if (downLeds.length >= 2) { downLeds[1].style.background = COLOR_WHITE; downLeds[1].style.opacity = '0.4'; }
+  if (downLeds.length >= 3) { downLeds[2].style.background = COLOR_WHITE; downLeds[2].style.opacity = '0.4'; }
 }
 
 // ── Render ────────────────────────────────────────────────────────────────────
