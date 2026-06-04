@@ -6,7 +6,7 @@
 #
 ##############################################################################################################################################
 
-from presets import PRESETS
+from presets import PRESETS, PAGE_NAMES as PAGES
 
 ##############################################################################################################################################
 # Implementação interna — não editar abaixo desta linha
@@ -18,7 +18,6 @@ from adafruit_midi.midi_message import MIDIMessage
 from display import DISPLAY_PRESET_NAME as _DISPLAY_PRESET_NAME
 from display import DISPLAY_PAGER      as _DISPLAY_PAGER
 
-PAGES        = ["A", "B", "C", "D"]
 SWITCH_NAMES = ["1", "2", "3", "4", "A", "B", "C", "D"]
 
 _COLOR_PRESET_ACTIVE = (0,   190, 190)   # ciano
@@ -108,6 +107,10 @@ def _refresh_preset_leds():
         if switch is None:
             continue
         pc = page * 8 + sw_idx
+        # Switch sem preset: LED apagado
+        if pc not in PRESETS:
+            _set_pixels(switch, _COLOR_OFF, 0)
+            continue
         is_active = (pc == _st.current_pc)
         has_fx = any(sw is switch for sw in _st.fx_switches.values())
         color = _COLOR_PRESET_ACTIVE if is_active else _COLOR_PRESET_DIM
@@ -269,6 +272,8 @@ class _PresetCallback(_BaseCallback):
         if _st.tap_mode:
             return  # ignora presets em modo tap
         pc = _st.current_page * 8 + self._sw_idx
+        if pc not in PRESETS:
+            return
         _st.current_pc  = pc
         _st.active_page = _st.current_page
         _st.midi.send(_RawMessage([0xC0 | self._channel, pc]))
@@ -286,15 +291,19 @@ class _PresetCallback(_BaseCallback):
         sw_idx = self._sw_idx
         pc     = _st.current_page * 8 + sw_idx
         switch = self.action.switch
-        if switch:
-            is_active = (pc == _st.current_pc)
-            has_fx    = any(sw is switch for sw in _st.fx_switches.values())
-            color = _COLOR_PRESET_ACTIVE if is_active else _COLOR_PRESET_DIM
-            bri   = 1.0 if is_active else 0.05
-            if has_fx:
-                _set_first_pixels(switch, color, bri)
-            else:
-                _set_pixels(switch, color, bri)
+        if not switch:
+            return
+        if pc not in PRESETS:
+            _set_pixels(switch, _COLOR_OFF, 0)
+            return
+        is_active = (pc == _st.current_pc)
+        has_fx    = any(sw is switch for sw in _st.fx_switches.values())
+        color = _COLOR_PRESET_ACTIVE if is_active else _COLOR_PRESET_DIM
+        bri   = 1.0 if is_active else 0.05
+        if has_fx:
+            _set_first_pixels(switch, color, bri)
+        else:
+            _set_pixels(switch, color, bri)
 
 
 class _PageCallback(_BaseCallback):

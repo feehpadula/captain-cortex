@@ -16,115 +16,114 @@
 #
 ##############################################################################################################################################
 
-#            gate    fx1     fx2     fx3     fx4     fx5
 _ON  = True
 _OFF = False
 
 _PRESETS_RAW = [
 
-    # ── Page A ────────────────────────────────────────────────────────────────
-
+    #     Page A
+    #     gate, fx1,  fx2,  fx3,  fx4,  fx5
     (  0, "Preset 1",
-         _OFF,  _OFF,  _OFF,  _OFF,  _OFF,  _OFF  ),
+          _OFF, _OFF, _OFF, _OFF, _OFF, _OFF  ),
 
     (  1, "Preset 2",
-         _OFF,  _ON,   _OFF,  _OFF,  _OFF,  _OFF  ),
+          _OFF, _OFF, _OFF, _OFF, _OFF, _OFF  ),
 
     (  2, "Preset 3",
-         _OFF,  _ON,   _ON,   _OFF,  _OFF,  _OFF  ),
+          _OFF, _OFF, _OFF, _OFF, _OFF, _OFF  ),
 
     (  3, "Preset 4",
-         _OFF,  _OFF,  _OFF,  _ON,   _ON,   _OFF  ),
+          _OFF, _OFF, _OFF, _OFF, _OFF, _OFF  ),
 
     (  4, "Preset 5",
-         _OFF,  _OFF,  _OFF,  _OFF,  _ON,   _ON   ),
+          _OFF, _OFF, _OFF, _OFF, _OFF, _OFF   ),
 
     (  5, "Preset 6",
-         _ON,   _OFF,  _OFF,  _OFF,  _OFF,  _OFF  ),
+          _OFF, _OFF, _OFF, _OFF, _OFF, _OFF  ),
 
     (  6, "Preset 7",
-         _OFF,  _ON,   _OFF,  _ON,   _OFF,  _OFF  ),
+          _OFF, _OFF, _OFF, _OFF, _OFF, _OFF  ),
 
     (  7, "Preset 8",
-         _OFF,  _OFF,  _ON,   _OFF,  _ON,   _OFF  ),
+          _OFF, _OFF, _OFF, _OFF, _OFF, _OFF  ),
 
-    # ── Page B ────────────────────────────────────────────────────────────────
-
+    #     Page B
+    #     gate, fx1,  fx2,  fx3,  fx4,  fx5
     (  8, "Preset 9",
-         _OFF,  _OFF,  _OFF,  _OFF,  _OFF,  _OFF  ),
+          _OFF, _OFF, _OFF, _OFF, _OFF, _OFF  ),
 
     (  9, "Preset 10",
-         _OFF,  _ON,   _OFF,  _OFF,  _OFF,  _OFF  ),
+          _OFF, _OFF, _OFF, _OFF, _OFF, _OFF  ),
 
     ( 10, "Preset 11",
-         _OFF,  _OFF,  _ON,   _OFF,  _OFF,  _OFF  ),
+          _OFF, _OFF, _OFF, _OFF, _OFF, _OFF  ),
 
     ( 11, "Preset 12",
-         _OFF,  _OFF,  _OFF,  _ON,   _OFF,  _OFF  ),
+          _OFF, _OFF, _OFF, _OFF, _OFF, _OFF  ),
 
     ( 12, "Preset 13",
-         _OFF,  _OFF,  _OFF,  _OFF,  _ON,   _OFF  ),
+          _OFF, _OFF, _OFF, _OFF, _OFF, _OFF  ),
 
     ( 13, "Preset 14",
-         _OFF,  _OFF,  _OFF,  _OFF,  _OFF,  _ON   ),
+          _OFF, _OFF, _OFF, _OFF, _OFF, _OFF   ),
 
     ( 14, "Preset 15",
-         _ON,   _ON,   _OFF,  _OFF,  _OFF,  _OFF  ),
+          _OFF, _OFF, _OFF, _OFF, _OFF, _OFF  ),
 
     ( 15, "Preset 16",
-         _OFF,  _ON,   _ON,   _ON,   _OFF,  _OFF  ),
+          _OFF, _OFF, _OFF, _OFF, _OFF, _OFF  ),
 
-    # ── Page C ────────────────────────────────────────────────────────────────
-
+    #     Page C
+    #     gate, fx1,  fx2,  fx3,  fx4,  fx5
     ( 16, "Preset 17",
-         _OFF,  _OFF,  _OFF,  _OFF,  _OFF,  _OFF  ),
+          _OFF, _OFF, _OFF, _OFF, _OFF, _OFF  ),
 
     ( 17, "Preset 18",
-         _OFF,  _ON,   _OFF,  _OFF,  _OFF,  _OFF  ),
+          _OFF, _OFF, _OFF, _OFF, _OFF, _OFF  ),
 
     ( 18, "Preset 19",
-         _OFF,  _OFF,  _ON,   _OFF,  _OFF,  _OFF  ),
+          _OFF, _OFF, _OFF, _OFF, _OFF, _OFF  ),
 
     ( 19, "Preset 20",
-         _OFF,  _OFF,  _OFF,  _ON,   _OFF,  _OFF  ),
+          _OFF, _OFF, _OFF, _OFF, _OFF, _OFF  ),
 
     ( 20, "Preset 21",
-         _OFF,  _OFF,  _OFF,  _OFF,  _ON,   _OFF  ),
+          _OFF, _OFF, _OFF, _OFF, _OFF, _OFF  ),
 
     ( 21, "Preset 22",
-         _OFF,  _OFF,  _OFF,  _OFF,  _OFF,  _ON   ),
+          _OFF, _OFF, _OFF, _OFF, _OFF, _OFF   ),
 
     ( 22, "Preset 23",
-         _ON,   _ON,   _ON,   _OFF,  _OFF,  _OFF  ),
+          _OFF, _OFF, _OFF, _OFF, _OFF, _OFF  ),
 
     ( 23, "Preset 24",
-         _OFF,  _ON,   _ON,   _ON,   _ON,   _OFF  ),
+          _OFF, _OFF, _OFF, _OFF, _OFF, _OFF  ),
 
-    # ── Page D ────────────────────────────────────────────────────────────────
-
+    #     Page D
+    #     gate, fx1,  fx2,  fx3,  fx4,  fx5
     ( 24, "Preset 25",
-         _OFF,  _OFF,  _OFF,  _OFF,  _OFF,  _OFF  ),
+          _OFF, _OFF, _OFF, _OFF, _OFF, _OFF  ),
 
     ( 25, "Preset 26",
-         _OFF,  _ON,   _OFF,  _OFF,  _OFF,  _OFF  ),
+          _OFF, _OFF, _OFF, _OFF, _OFF, _OFF  ),
 
     ( 26, "Preset 27",
-         _OFF,  _OFF,  _ON,   _OFF,  _OFF,  _OFF  ),
+          _OFF, _OFF, _OFF, _OFF, _OFF, _OFF  ),
 
     ( 27, "Preset 28",
-         _OFF,  _OFF,  _OFF,  _ON,   _OFF,  _OFF  ),
+          _OFF, _OFF, _OFF, _OFF, _OFF, _OFF  ),
 
     ( 28, "Preset 29",
-         _OFF,  _OFF,  _OFF,  _OFF,  _ON,   _OFF  ),
+          _OFF, _OFF, _OFF, _OFF, _OFF, _OFF  ),
 
     ( 29, "Preset 30",
-         _OFF,  _OFF,  _OFF,  _OFF,  _OFF,  _ON   ),
+          _OFF, _OFF, _OFF, _OFF, _OFF, _OFF   ),
 
     ( 30, "Preset 31",
-         _ON,   _OFF,  _ON,   _OFF,  _ON,   _OFF  ),
+          _OFF, _OFF, _OFF, _OFF, _OFF, _OFF  ),
 
     ( 31, "Preset 32",
-         _ON,   _ON,   _ON,   _ON,   _ON,   _ON   ),
+          _OFF, _OFF, _OFF, _OFF, _OFF, _OFF   ),
 ]
 
 # Converte para o formato esperado pelo preset_manager
@@ -142,3 +141,8 @@ PRESETS = {
     }
     for pc, name, gate, fx1, fx2, fx3, fx4, fx5 in _PRESETS_RAW
 }
+
+# Número de páginas calculado automaticamente (8 presets por página)
+_total     = len(_PRESETS_RAW)
+_n_pages   = (_total + 7) // 8
+PAGE_NAMES = ["A", "B", "C", "D", "E", "F", "G", "H"][:_n_pages]
