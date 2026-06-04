@@ -361,7 +361,7 @@ function renderTabs() {
   for (let i = 0; i < n; i++) {
     const btn = document.createElement("button");
     btn.className = "page-tab" + (i === currentPage ? " active" : "");
-    btn.textContent = `Page ${PAGE_NAMES[i]} (${presetsOnPage(i).length})`;
+    btn.textContent = `Page ${PAGE_NAMES[i]} (${presetsOnPage(i).filter(p => p.name.trim() !== '').length})`;
     btn.onclick = () => { currentPage = i; render(); };
     tabs.appendChild(btn);
   }
@@ -401,7 +401,7 @@ function renderTable() {
     inp.className = "name-input";
     inp.type = "text";
     inp.value = preset.name;
-    inp.oninput = e => { preset.name = e.target.value; };
+    inp.oninput = e => { preset.name = e.target.value; renderStats(); renderTabs(); };
     tdName.appendChild(inp);
     tr.appendChild(tdName);
 
