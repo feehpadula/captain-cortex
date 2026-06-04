@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>captain-cortex — Preset Editor</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500&display=swap');
+
+  :root {
+    --bg:        #0a0a0a;
+    --surface:   #111111;
+    --border:    #1e1e1e;
+    --accent:    #BE0A5A;
+    --cyan:      #00BEBE;
+    --text:      #e8e8e8;
+    --muted:     #555;
+    --dim:       #333;
+    --on:        #BE0A5A;
+    --off:       #1a1a1a;
+    --on-text:   #fff;
+    --off-text:  #444;
+    --row-hover: #161616;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    min-height: 100vh;
+    padding: 40px 24px;
+  }
+
+  header {
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+    margin-bottom: 40px;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 20px;
+  }
+
+  header h1 {
+    font-family: 'Space Mono', monospace;
+    font-size: 18px;
+    color: var(--cyan);
+    letter-spacing: -0.5px;
+  }
+
+  header span {
+    font-size: 12px;
+    color: var(--muted);
+    font-family: 'Space Mono', monospace;
+  }
+
+  .toolbar {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+  }
+
+  button {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    padding: 8px 16px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text);
+    cursor: pointer;
+    letter-spacing: 0.5px;
+    transition: all 0.15s;
+  }
+
+  button:hover { border-color: var(--muted); background: #1a1a1a; }
+
+  button.primary {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+  }
+  button.primary:hover { background: #d40d66; border-color: #d40d66; }
+
+  button.cyan {
+    background: transparent;
+    border-color: var(--cyan);
+    color: var(--cyan);
+  }
+  button.cyan:hover { background: rgba(0,190,190,0.08); }
+
+  .pages-tabs {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 20px;
+  }
+
+  .page-tab {
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    padding: 6px 18px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .page-tab.active {
+    border-color: var(--cyan);
+    color: var(--cyan);
+    background: rgba(0,190,190,0.06);
+  }
+
+  .page-tab:hover:not(.active) { border-color: var(--dim); color: var(--text); }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  thead th {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 10px 12px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+  }
+
+  thead th.fx-col { text-align: center; }
+
+  tbody tr {
+    border-bottom: 1px solid var(--border);
+    transition: background 0.1s;
+  }
+
+  tbody tr:hover { background: var(--row-hover); }
+
+  tbody tr.empty-slot { opacity: 0.3; pointer-events: none; }
+
+  td { padding: 10px 12px; vertical-align: middle; }
+
+  td.pc {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    width: 48px;
+  }
+
+  td.name-cell { min-width: 180px; }
+
+  .name-input {
+    background: transparent;
+    border: 1px solid transparent;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    padding: 4px 8px;
+    width: 100%;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+
+  .name-input:hover  { border-color: var(--dim); }
+  .name-input:focus  { border-color: var(--cyan); }
+
+  td.fx-col { text-align: center; width: 72px; }
+
+  .fx-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 24px;
+    border: 1px solid var(--off);
+    background: var(--off);
+    color: var(--off-text);
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    transition: all 0.15s;
+    user-select: none;
+  }
+
+  .fx-btn.on {
+    background: var(--on);
+    border-color: var(--on);
+    color: var(--on-text);
+  }
+
+  .fx-btn:hover { filter: brightness(1.3); }
+
+  td.actions-cell {
+    text-align: right;
+    width: 80px;
+  }
+
+  .del-btn {
+    background: transparent;
+    border: 1px solid transparent;
+    color: var(--muted);
+    font-size: 16px;
+    padding: 2px 8px;
+    cursor: pointer;
+    transition: all 0.15s;
+    line-height: 1;
+  }
+
+  .del-btn:hover { color: var(--accent); border-color: var(--accent); }
+
+  .output-area {
+    margin-top: 40px;
+    border-top: 1px solid var(--border);
+    padding-top: 24px;
+  }
+
+  .output-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+
+  textarea {
+    width: 100%;
+    height: 320px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: #aaa;
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    padding: 16px;
+    outline: none;
+    resize: vertical;
+    line-height: 1.7;
+  }
+
+  textarea:focus { border-color: var(--dim); }
+
+  .stats {
+    display: flex;
+    gap: 24px;
+    margin-bottom: 20px;
+  }
+
+  .stat {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+  }
+
+  .stat-val { color: var(--cyan); }
+  .stat-label { color: var(--muted); margin-left: 4px; }
+
+  .toast {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: var(--cyan);
+    color: #000;
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    padding: 10px 20px;
+    opacity: 0;
+    transition: opacity 0.3s;
+    pointer-events: none;
+  }
+
+  .toast.show { opacity: 1; }
+
+  .page-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>captain-cortex</h1>
+  <span>preset editor → presets.py</span>
+</header>
+
+<div class="toolbar">
+  <button class="cyan" onclick="loadDefault()">↺ Load Default</button>
+  <button class="primary" onclick="generateAndShow()">⬇ Generate presets.py</button>
+  <button onclick="copyOutput()">⎘ Copy to Clipboard</button>
+</div>
+
+<div class="stats" id="stats"></div>
+
+<div class="pages-tabs" id="pageTabs"></div>
+
+<table>
+  <thead>
+    <tr>
+      <th>PC</th>
+      <th>Preset Name</th>
+      <th class="fx-col">GATE</th>
+      <th class="fx-col">FX 1</th>
+      <th class="fx-col">FX 2</th>
+      <th class="fx-col">FX 3</th>
+      <th class="fx-col">FX 4</th>
+      <th class="fx-col">FX 5</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody id="presetTable"></tbody>
+</table>
+
+<div class="output-area">
+  <div class="output-label">presets.py output</div>
+  <textarea id="output" readonly placeholder="Click 'Generate presets.py' to see the output..."></textarea>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ── Data ──────────────────────────────────────────────────────────────────────
+
+let presets = Array.from({length: 64}, (_, i) => ({
+  pc: i, name: '',
+  gate: false, fx1: false, fx2: false, fx3: false, fx4: false, fx5: false
+}));
+
+let currentPage = 0;
+const PAGE_NAMES = ["A","B","C","D","E","F","G","H"];
+const FX_KEYS = ["gate","fx1","fx2","fx3","fx4","fx5"];
+const FX_LABELS = ["GATE","FX 1","FX 2","FX 3","FX 4","FX 5"];
+
+// ── Helpers ───────────────────────────────────────────────────────────────────
+
+function nPages() { return Math.ceil(presets.length / 8); }
+
+function presetsOnPage(page) {
+  return presets.filter(p => Math.floor(p.pc / 8) === page);
+}
+
+function reassignPCs() {
+  presets.forEach((p, i) => { p.pc = i; });
+}
+
+// ── Render ────────────────────────────────────────────────────────────────────
+
+function renderTabs() {
+  const tabs = document.getElementById("pageTabs");
+  const n = nPages();
+  tabs.innerHTML = "";
+  for (let i = 0; i < n; i++) {
+    const btn = document.createElement("button");
+    btn.className = "page-tab" + (i === currentPage ? " active" : "");
+    btn.textContent = `Page ${PAGE_NAMES[i]} (${presetsOnPage(i).length})`;
+    btn.onclick = () => { currentPage = i; render(); };
+    tabs.appendChild(btn);
+  }
+}
+
+function renderStats() {
+  const n = nPages();
+  const empty = presets.filter(p => p.name.trim() === '').length;
+  document.getElementById("stats").innerHTML = `
+    <div class="stat"><span class="stat-val">${presets.length - empty}</span><span class="stat-label">presets</span></div>
+    <div class="stat"><span class="stat-val">${n}</span><span class="stat-label">pages (${PAGE_NAMES.slice(0,n).join(", ")})</span></div>
+    <div class="stat"><span class="stat-val">${empty}</span><span class="stat-label">empty slots</span></div>
+  `;
+}
+
+function renderTable() {
+  const tbody = document.getElementById("presetTable");
+  tbody.innerHTML = "";
+
+  const pagePresets = presetsOnPage(currentPage);
+  const pageStart   = currentPage * 8;
+
+  pagePresets.forEach(preset => {
+    const tr = document.createElement("tr");
+    tr.dataset.pc = preset.pc;
+
+    // PC
+    const tdPc = document.createElement("td");
+    tdPc.className = "pc";
+    tdPc.textContent = preset.pc;
+    tr.appendChild(tdPc);
+
+    // Name
+    const tdName = document.createElement("td");
+    tdName.className = "name-cell";
+    const inp = document.createElement("input");
+    inp.className = "name-input";
+    inp.type = "text";
+    inp.value = preset.name;
+    inp.oninput = e => { preset.name = e.target.value; };
+    tdName.appendChild(inp);
+    tr.appendChild(tdName);
+
+    // FX toggles
+    FX_KEYS.forEach((key, ki) => {
+      const td = document.createElement("td");
+      td.className = "fx-col";
+      const btn = document.createElement("div");
+      btn.className = "fx-btn" + (preset[key] ? " on" : "");
+      btn.textContent = preset[key] ? "ON" : "—";
+      btn.onclick = () => {
+        preset[key] = !preset[key];
+        btn.className = "fx-btn" + (preset[key] ? " on" : "");
+        btn.textContent = preset[key] ? "ON" : "—";
+      };
+      td.appendChild(btn);
+      tr.appendChild(td);
+    });
+
+    // Delete
+    const tdDel = document.createElement("td");
+    tdDel.className = "actions-cell";
+    const delBtn = document.createElement("button");
+    delBtn.className = "del-btn";
+    delBtn.textContent = "×";
+    delBtn.title = "Delete preset";
+    delBtn.onclick = () => {
+      preset.name = '';
+      preset.gate = false;
+      preset.fx1  = false;
+      preset.fx2  = false;
+      preset.fx3  = false;
+      preset.fx4  = false;
+      preset.fx5  = false;
+      render();
+    };
+    tdDel.appendChild(delBtn);
+    tr.appendChild(tdDel);
+
+    tbody.appendChild(tr);
+  });
+}
+
+function render() {
+  renderTabs();
+  renderStats();
+  renderTable();
+}
+
+// ── Generate presets.py ───────────────────────────────────────────────────────
+
+function bool(v) { return v ? "_ON " : "_OFF"; }
+
+function generateOutput() {
+  const n = nPages();
+  const pageNames = PAGE_NAMES.slice(0, n);
+  let out = "";
+
+  out += `##############################################################################################################################################\n`;
+  out += `#\n`;
+  out += `# presets.py — Definição dos presets da Nano Cortex\n`;
+  out += `#\n`;
+  out += `# Edite este arquivo para configurar seus presets.\n`;
+  out += `#\n`;
+  out += `# Cada preset ocupa duas linhas:\n`;
+  out += `#   Linha 1: número do PC e nome do preset\n`;
+  out += `#   Linha 2: estado dos efeitos (gate, fx1, fx2, fx3, fx4, fx5)\n`;
+  out += `#\n`;
+  out += `# CCs da Nano Cortex:\n`;
+  out += `#   CC#34 = INPUT GATE | CC#37 = FX 1 | CC#38 = FX 2 | CC#39 = FX 3\n`;
+  out += `#   CC#40 = FX 4       | CC#41 = FX 5\n`;
+  out += `#\n`;
+  out += `# Valores: _ON = ligado, _OFF = desligado\n`;
+  out += `#\n`;
+  out += `##############################################################################################################################################\n\n`;
+  out += `_ON  = True\n`;
+  out += `_OFF = False\n\n`;
+  out += `_PRESETS_RAW = [\n`;
+
+  for (let page = 0; page < n; page++) {
+    out += `\n    # ── Page ${pageNames[page]} ${"─".repeat(68)}\n`;
+    out += `    #            gate   fx1    fx2    fx3    fx4    fx5\n\n`;
+    const ps = presetsOnPage(page);
+    ps.forEach(p => {
+      const namePad = JSON.stringify(p.name);
+      out += `    ( ${String(p.pc).padStart(2)}, ${namePad},\n`;
+      out += `         ${bool(p.gate)},  ${bool(p.fx1)},  ${bool(p.fx2)},  ${bool(p.fx3)},  ${bool(p.fx4)},  ${bool(p.fx5)}  ),\n\n`;
+    });
+  }
+
+  out += `]\n\n`;
+  out += `# Converte para o formato esperado pelo preset_manager\n`;
+  out += `PRESETS = {\n`;
+  out += `    pc: {\n`;
+  out += `        'name': name,\n`;
+  out += `        'fx': {\n`;
+  out += `            34: gate,\n`;
+  out += `            37: fx1,\n`;
+  out += `            38: fx2,\n`;
+  out += `            39: fx3,\n`;
+  out += `            40: fx4,\n`;
+  out += `            41: fx5,\n`;
+  out += `        }\n`;
+  out += `    }\n`;
+  out += `    for pc, name, gate, fx1, fx2, fx3, fx4, fx5 in _PRESETS_RAW\n`;
+  out += `}\n\n`;
+  out += `# Numero de paginas calculado automaticamente (8 presets por pagina)\n`;
+  out += `_total     = len(_PRESETS_RAW)\n`;
+  out += `_n_pages   = (_total + 7) // 8\n`;
+  out += `PAGE_NAMES = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'][:_n_pages]\n`;
+
+  return out;
+}
+
+function generateAndShow() {
+  document.getElementById("output").value = generateOutput();
+  document.getElementById("output").scrollIntoView({ behavior: "smooth" });
+  showToast("presets.py generated ✓");
+}
+
+function copyOutput() {
+  const txt = document.getElementById("output").value;
+  if (!txt) { generateAndShow(); return; }
+  navigator.clipboard.writeText(txt).then(() => showToast("Copied to clipboard ✓"));
+}
+
+function loadDefault() {
+  if (!confirm("Reset all presets to defaults?")) return;
+  presets = Array.from({length: 64}, (_, i) => ({
+    pc: i, name: '',
+    gate: false, fx1: false, fx2: false, fx3: false, fx4: false, fx5: false
+  }));
+  currentPage = 0;
+  render();
+  showToast("Presets reset to defaults ✓");
+}
+
+function showToast(msg) {
+  const t = document.getElementById("toast");
+  t.textContent = msg;
+  t.classList.add("show");
+  setTimeout(() => t.classList.remove("show"), 2200);
+}
+
+// ── Init ──────────────────────────────────────────────────────────────────────
+render();
+</script>
+</body>
+</html>
