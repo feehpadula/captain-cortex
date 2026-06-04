@@ -435,11 +435,11 @@ function renderTable() {
       td.className = "fx-col";
       const btn = document.createElement("div");
       btn.className = "fx-btn" + (preset[key] ? " on" : "");
-      btn.textContent = preset[key] ? "ON" : "—";
+      btn.textContent = preset[key] ? "ON" : "OFF";
       btn.onclick = () => {
         preset[key] = !preset[key];
         btn.className = "fx-btn" + (preset[key] ? " on" : "");
-        btn.textContent = preset[key] ? "ON" : "—";
+        btn.textContent = preset[key] ? "ON" : "OFF";
         saveSession();
       };
       td.appendChild(btn);
