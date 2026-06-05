@@ -219,7 +219,6 @@ captain-cortex/
 ├── presets.py           # Preset definitions — edit this to configure your presets
 ├── preset_editor/
 ├───── index.html        # Visual browser-based preset editor
-├── gerar_boot.py        # Helper script to regenerate logo.bmp on Windows
 └── lib/                 # CircuitPython libraries (pyswitch, adafruit_midi, etc.)
 ```
 
