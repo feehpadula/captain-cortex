@@ -52,8 +52,8 @@ The Nano Cortex TRS MIDI input receives Program Change and Control Change messag
 
 ```
 ┌─────────────────────────────────────┐
-│  GATE  │  FX 1  │  FX 2  │  (30px) │  ← FX status headers (row 1)
-│  FX 3  │  FX 4  │  FX 5  │  (30px) │  ← FX status headers (row 2)
+│  GATE  │  FX 1  │  FX 2  │  (30px)  │  ← FX status headers (row 1)
+│  FX 3  │  FX 4  │  FX 5  │  (30px)  │  ← FX status headers (row 2)
 │                                     │
 │           Preset Name               │  ← Large preset name (120px)
 │                                     │
