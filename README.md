@@ -42,7 +42,7 @@ The Nano Cortex TRS MIDI input receives Program Change and Control Change messag
   - Empty preset slots (no name defined) have their LED turned off and button blocked — no MIDI is sent
   - **Tap Tempo** mode with visual BPM feedback on the display and pulsing LED
 - **`presets.py`** — separate file for preset configuration, easy to read and edit
-- **`preset_editor.html`** — browser-based visual editor for `presets.py` (see below)
+- **`preset_editor/index.html`** — browser-based visual editor for `presets.py` (see below)
 - **`DISPLAY_PAGER`** label — shows current page and active preset reference (e.g. `A3 - 3`)
 - **`DISPLAY_PRESET_NAME`** label — shows the name of the active preset in large text
 
@@ -146,7 +146,7 @@ Hold **Switch UP** for ~600ms to enter Tap Tempo mode:
 
 ### Using the visual editor (recommended)
 
-Open `preset_editor.html` in any browser — no server needed, works directly from the file system.
+Open [captain-cortex online editor](https://captain-cortex.feehpadula.com/) or `preset_editor/index.html` in any browser — no server needed, works directly from the file system.
 
 The editor lets you:
 - **Name** each preset slot
@@ -217,7 +217,8 @@ captain-cortex/
 ├── inputs.py            # Switch assignments
 ├── preset_manager.py    # Custom paging, preset selection, FX toggles, tap tempo
 ├── presets.py           # Preset definitions — edit this to configure your presets
-├── preset_editor.html   # Visual browser-based preset editor
+├── preset_editor/
+├───── index.html        # Visual browser-based preset editor
 ├── gerar_boot.py        # Helper script to regenerate logo.bmp on Windows
 └── lib/                 # CircuitPython libraries (pyswitch, adafruit_midi, etc.)
 ```
